@@ -10,7 +10,10 @@ VERSION := latest
 #* Poetry
 .PHONY: poetry-download
 poetry-download:
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | $(PYTHON) -
+	export POETRY_HOME=/opt/poetry
+	python3 -m venv $POETRY_HOME
+	$POETRY_HOME/bin/pip install poetry==1.2.0
+	$POETRY_HOME/bin/poetry --version
 
 .PHONY: poetry-remove
 poetry-remove:
