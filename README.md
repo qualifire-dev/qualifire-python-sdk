@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/github/license/qualifire-dev/qualifire)](https://github.com/qualifire-dev/qualifire/blob/main/LICENSE)
 ![Coverage Report](assets/images/coverage.svg)
 
-Qualifire PYthon SDK
+Qualifire Python SDK
 
 </div>
 
