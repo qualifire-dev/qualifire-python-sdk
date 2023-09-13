@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-
+          pip install pytest
       - name: Run style checks
         run: |
           make check-codestyle
