@@ -1,7 +1,17 @@
 # type: ignore[attr-defined]
 """Qualifire PYthon SDK"""
 
+import logging
+import os
 import sys
+
+from . import client, instrumentations
+
+logger = logging.getLogger("qualifire")
+QUALIFIRE_API_KEY_ENV_VAR = "QUALIFIRE_API_KEY"
+QUALIFIRE_BASE_URL_ENV_VAR = "QUALIFIRE_BASE_URL"
+_DEFAULT_BASE_URL = "https://intake.qualifire.ai/"
+
 
 if sys.version_info >= (3, 8):
     from importlib import metadata as importlib_metadata
@@ -17,3 +27,34 @@ def get_version() -> str:
 
 
 version: str = get_version()
+
+
+def init(
+    api_key=None,
+    debug=False,
+    base_url=None,
+):
+    if api_key is None:
+        api_key = os.environ.get(QUALIFIRE_API_KEY_ENV_VAR)
+        if api_key is None:
+            logger.warning(
+                f"No API key found, please pass the api key to this function or set the environment variable: {QUALIFIRE_API_KEY_ENV_VAR}"
+            )
+
+    if debug is True:
+        logger.setLevel("INFO")
+    else:
+        logger.setLevel("ERROR")
+
+    if base_url is None:
+        base_url = os.environ.get(QUALIFIRE_BASE_URL_ENV_VAR)
+
+        if base_url is None:
+            base_url = _DEFAULT_BASE_URL
+
+    logger.info(
+        "initializing client",
+        {
+            "base_url": base_url,
+        },
+    )
