@@ -10,10 +10,8 @@ VERSION := latest
 #* Poetry
 .PHONY: poetry-download
 poetry-download:
-	python3 -m venv /opt/poetry
-	/opt/poetry/bin/pip install poetry==1.2.0
-	/opt/poetry/bin/poetry --version
-	export PATH=${PATH};/opt/poetry/bin/poetry
+	pip install -U poetry==1.2.0
+	poetry --version
 
 .PHONY: poetry-remove
 poetry-remove:
