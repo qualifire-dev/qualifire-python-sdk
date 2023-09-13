@@ -13,10 +13,7 @@ QUALIFIRE_BASE_URL_ENV_VAR = "QUALIFIRE_BASE_URL"
 _DEFAULT_BASE_URL = "https://intake.qualifire.ai/"
 
 
-if sys.version_info >= (3, 8):
-    from importlib import metadata as importlib_metadata
-else:
-    import importlib_metadata
+from importlib import metadata as importlib_metadata
 
 
 def get_version() -> str:
@@ -42,7 +39,7 @@ def init(
             )
 
     if debug is True:
-        logger.setLevel("INFO")
+        logger.setLevel("DEBUG")
     else:
         logger.setLevel("ERROR")
 
@@ -52,9 +49,19 @@ def init(
         if base_url is None:
             base_url = _DEFAULT_BASE_URL
 
-    logger.info(
+    logger.debug(
         "initializing client",
         {
             "base_url": base_url,
         },
     )
+
+    qualifire_client = client.Client(
+        base_url=base_url,
+        api_key=api_key,
+    )
+
+    try:
+        qualifire_client.initialize()
+    except Exception:
+        logger.exception("Error while initializing")

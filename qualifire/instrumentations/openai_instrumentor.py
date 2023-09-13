@@ -1,6 +1,6 @@
 import json
 import logging
-from os import path
+import urllib.parse
 
 import openai
 import requests
@@ -27,6 +27,14 @@ class OpenAiInstrumentor(BaseInstrumentor):
         },
     ]
 
+    def __init__(
+        self,
+        base_url: str,
+        api_key: str,
+    ):
+        self._base_url = base_url
+        self._api_key = api_key
+
     def _wrap(self, func, instance, args, kwargs):
         if hasattr(func, "__wrapped__"):
             return func(*args, **kwargs)
@@ -38,7 +46,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
         }
 
         q_response = requests.post(
-            path.join(self._base_url, "/api/intake"),
+            urllib.parse.urljoin(self._base_url, "/api/intake"),
             data=json.dumps(
                 {
                     "caller": f"{instance.__name__}.{func.__name__}",
@@ -52,7 +60,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
 
         if q_response.json()["success"]:
             requests.patch(
-                path.join(self._base_url, "/api/intake"),
+                urllib.parse.urljoin(self._base_url, "/api/intake"),
                 data=json.dumps(
                     {
                         "createdCallId": q_response.json()["id"],
@@ -66,12 +74,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
 
     def initialize(
         self,
-        api_key: str,
-        base_url: str,
     ):
-        self._api_key = api_key
-        self._base_url = base_url
-
         for wrapped_method in self.WRAPPED_METHODS:
             wrap_object = wrapped_method.get("object")
             wrap_method = wrapped_method.get("method")

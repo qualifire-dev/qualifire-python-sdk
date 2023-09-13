@@ -15,18 +15,20 @@ class Client:
         self._api_key = api_key
 
     def initialize(self):
-        for instrumentor in instrumentors:
+        for instrumentor_class in instrumentors:
             logger.debug(
                 "initializing instrumentor",
                 {
-                    "instrumentor": instrumentor.__name__,
+                    "instrumentor": instrumentor_class.__name__,
                 },
             )
             try:
-                instrumentor.initialize(
+                instrumentor = instrumentor_class(
                     api_key=self._api_key,
                     base_url=self._base_url,
                 )
+
+                instrumentor.initialize()
             except Exception:
                 logger.exception("error while initializing instrumentor.")
 
