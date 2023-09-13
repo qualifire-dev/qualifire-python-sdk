@@ -54,6 +54,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
                 }
             ),
             headers=headers,
+            timeout=300,
         )
 
         response = func(*args, **kwargs)
@@ -69,6 +70,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
                     },
                 ),
                 headers=headers,
+                timeout=300,
             )
         return response
 
