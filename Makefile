@@ -14,6 +14,7 @@ poetry-download:
 	python3 -m venv $POETRY_HOME
 	$POETRY_HOME/bin/pip install poetry==1.2.0
 	$POETRY_HOME/bin/poetry --version
+	export PATH=$PATH;$POETRY_HOME/bin/poetry
 
 .PHONY: poetry-remove
 poetry-remove:
