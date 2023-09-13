@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Build status](https://github.com/qualifire-dev/qualifire/workflows/build/badge.svg?branch=main&event=push)](https://github.com/qualifire-dev/qualifire/actions?query=workflow%3Abuild)
+[![build](https://github.com/qualifire-dev/qualifire-python-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/qualifire-dev/qualifire-python-sdk/actions/workflows/build.yml)
 [![Python Version](https://img.shields.io/pypi/pyversions/qualifire.svg)](https://pypi.org/project/qualifire/)
 [![Dependencies Status](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)](https://github.com/qualifire-dev/qualifire/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Aapp%2Fdependabot)
 
