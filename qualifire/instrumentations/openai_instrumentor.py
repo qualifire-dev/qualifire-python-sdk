@@ -65,7 +65,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
                 data=json.dumps(
                     {
                         "createdCallId": q_response.json()["id"],
-                        "model": kwargs["model"],
+                        "model": response.get("model"),
                         "body": response,
                     },
                 ),
