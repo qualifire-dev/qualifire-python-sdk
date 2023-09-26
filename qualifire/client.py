@@ -6,13 +6,10 @@ logger = logging.getLogger("qualifire")
 
 
 class Client:
-    def __init__(
-        self,
-        base_url,
-        api_key,
-    ) -> None:
+    def __init__(self, base_url, api_key, version) -> None:
         self._base_url = base_url
         self._api_key = api_key
+        self._version = version
 
     def initialize(self):
         for instrumentor_class in instrumentors:
@@ -26,6 +23,7 @@ class Client:
                 instrumentor = instrumentor_class(
                     api_key=self._api_key,
                     base_url=self._base_url,
+                    version=self._version,
                 )
 
                 instrumentor.initialize()

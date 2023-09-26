@@ -60,6 +60,7 @@ def init(
     qualifire_client = client.Client(
         base_url=base_url,
         api_key=api_key,
+        version=version,
     )
 
     try:

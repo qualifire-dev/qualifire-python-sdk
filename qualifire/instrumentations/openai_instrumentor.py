@@ -6,7 +6,6 @@ import openai
 import requests
 from wrapt import wrap_function_wrapper
 
-from .. import version
 from .base_instrumentor import BaseInstrumentor
 
 logger = logging.getLogger("qualifire")
@@ -32,9 +31,11 @@ class OpenAiInstrumentor(BaseInstrumentor):
         self,
         base_url: str,
         api_key: str,
+        version: str,
     ):
         self._base_url = base_url
         self._api_key = api_key
+        self._version = version
 
     def _wrap(self, func, instance, args, kwargs):
         if hasattr(func, "__wrapped__"):
@@ -44,7 +45,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
             "Content-type": "application/json",
             "Accept": "application/json",
             "X-qualifire-key": self._api_key,
-            "X-qualifire-sdk-version": version,
+            "X-qualifire-sdk-version": self._version,
         }
 
         q_response = requests.post(
