@@ -6,6 +6,7 @@ import openai
 import requests
 from wrapt import wrap_function_wrapper
 
+from .. import version
 from .base_instrumentor import BaseInstrumentor
 
 logger = logging.getLogger("qualifire")
@@ -43,6 +44,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
             "Content-type": "application/json",
             "Accept": "application/json",
             "X-qualifire-key": self._api_key,
+            "X-qualifire-sdk-version": version,
         }
 
         q_response = requests.post(
@@ -58,20 +60,21 @@ class OpenAiInstrumentor(BaseInstrumentor):
         )
 
         response = func(*args, **kwargs)
-
-        if q_response.json()["success"]:
+        try:
             requests.patch(
                 urllib.parse.urljoin(self._base_url, "/api/intake"),
                 data=json.dumps(
                     {
                         "createdCallId": q_response.json()["id"],
-                        "model": kwargs["model"],
+                        "model": response.get("model"),
                         "body": response,
                     },
                 ),
                 headers=headers,
                 timeout=300,
             )
+        except Exception:
+            logger.debug("error while patching")
         return response
 
     def initialize(
