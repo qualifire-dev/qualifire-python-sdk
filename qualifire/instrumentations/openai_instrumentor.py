@@ -6,6 +6,7 @@ import openai
 import requests
 from wrapt import wrap_function_wrapper
 
+from .. import version
 from .base_instrumentor import BaseInstrumentor
 
 logger = logging.getLogger("qualifire")
@@ -43,6 +44,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
             "Content-type": "application/json",
             "Accept": "application/json",
             "X-qualifire-key": self._api_key,
+            "X-qualifire-sdk-version": version,
         }
 
         q_response = requests.post(
