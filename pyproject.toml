@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "qualifire"
-version = "0.5.3"
+version = "0.5.4"
 description = "Qualifire PYthon SDK"
 readme = "README.md"
 authors = ["qualifire-dev <dror@qualifire.ai>"]
