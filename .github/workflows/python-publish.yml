@@ -33,8 +33,6 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           version: 1.6.1
-      - name: Bump version
-        run: poetry version minor
       - name: Build package
         run: python -m build
       - name: Publish package
