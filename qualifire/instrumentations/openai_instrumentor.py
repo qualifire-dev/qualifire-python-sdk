@@ -58,8 +58,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
         )
 
         response = func(*args, **kwargs)
-
-        if q_response.json()["success"]:
+        try:
             requests.patch(
                 urllib.parse.urljoin(self._base_url, "/api/intake"),
                 data=json.dumps(
@@ -72,6 +71,8 @@ class OpenAiInstrumentor(BaseInstrumentor):
                 headers=headers,
                 timeout=300,
             )
+        except Exception:
+            logger.debug("error while patching")
         return response
 
     def initialize(
