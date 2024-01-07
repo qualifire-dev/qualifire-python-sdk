@@ -1,4 +1,3 @@
-# type: ignore[attr-defined]
 """Qualifire PYthon SDK"""
 
 import logging
