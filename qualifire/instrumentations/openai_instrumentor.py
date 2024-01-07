@@ -61,6 +61,7 @@ class OpenAiInstrumentor(BaseInstrumentor):
         )
 
         response = func(*args, **kwargs)
+
         try:
             requests.patch(
                 urllib.parse.urljoin(self._base_url, "/api/intake"),
