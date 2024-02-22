@@ -10,7 +10,7 @@ from . import client
 logger = logging.getLogger("qualifire")
 QUALIFIRE_API_KEY_ENV_VAR = "QUALIFIRE_API_KEY"
 QUALIFIRE_BASE_URL_ENV_VAR = "QUALIFIRE_BASE_URL"
-_DEFAULT_BASE_URL = "https://intake.qualifire.ai/"
+_DEFAULT_BASE_URL = "https://proxy.qualifire.ai/"
 
 
 from importlib import metadata as importlib_metadata
