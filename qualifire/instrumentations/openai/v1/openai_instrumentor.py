@@ -2,25 +2,25 @@ import json
 import logging
 import urllib.parse
 
-import openai
 import requests
+from openai.resources import Chat, Completions
 from wrapt import wrap_function_wrapper
 
-from .base_instrumentor import BaseInstrumentor
+from ...base_instrumentor import BaseInstrumentor
 
 logger = logging.getLogger("qualifire")
 
 
-class OpenAiInstrumentor(BaseInstrumentor):
+class OpenAiInstrumentorV1(BaseInstrumentor):
     WRAPPED_METHODS = [
         {
-            "func": openai.ChatCompletion.create,
+            "func": Chat.completions.create,
             "object": "ChatCompletion",
             "method": "create",
             "span_name": "openai.chat",
         },
         {
-            "func": openai.Completion.create,
+            "func": Completions.create,
             "object": "Completion",
             "method": "create",
             "span_name": "openai.completion",
