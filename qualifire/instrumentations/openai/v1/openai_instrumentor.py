@@ -1,13 +1,10 @@
-import json
 import logging
-import urllib.parse
 
-import requests
-from openai.resources import Chat, Completions
+from openai.resources import AsyncChat, AsyncCompletions, Chat, Completions
 from wrapt import wrap_function_wrapper
 
 from ...base_instrumentor import BaseInstrumentor
-from ..shared import QualifireLogger
+from ..shared import OpenAIWrappers, QualifireLogger
 
 logger = logging.getLogger("qualifire")
 
@@ -18,13 +15,23 @@ class OpenAiInstrumentorV1(BaseInstrumentor):
             "func": Chat.completions.create,
             "object": "ChatCompletion",
             "method": "create",
-            "span_name": "openai.chat",
         },
         {
             "func": Completions.create,
             "object": "Completion",
             "method": "create",
-            "span_name": "openai.completion",
+        },
+        {
+            "func": AsyncChat.completions.create,
+            "object": "AsyncChat",
+            "method": "create",
+            "async": True,
+        },
+        {
+            "func": AsyncCompletions.create,
+            "object": "AsyncCompletion",
+            "method": "create",
+            "async": True,
         },
     ]
 
@@ -34,56 +41,21 @@ class OpenAiInstrumentorV1(BaseInstrumentor):
         api_key: str,
         version: str,
     ):
+        self._version = version
         self._base_url = base_url
         self._api_key = api_key
-        self._version = version
+
         self._logger = QualifireLogger(
             base_url=base_url,
             api_key=api_key,
             version=version,
         )
 
-    def _wrap(self, func, instance, args, kwargs):
-        if hasattr(func, "__wrapped__"):
-            return func(*args, **kwargs)
-
-        headers = {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "X-qualifire-key": self._api_key,
-            "X-qualifire-sdk-version": self._version,
-        }
-
-        q_response = requests.post(
-            urllib.parse.urljoin(self._base_url, "/api/intake"),
-            data=json.dumps(
-                {
-                    "caller": f"{instance.__name__}.{func.__name__}",
-                    "body": kwargs,
-                }
-            ),
-            headers=headers,
-            timeout=300,
+        self._wrapper = OpenAIWrappers(
+            base_url=base_url,
+            api_key=api_key,
+            version=version,
         )
-
-        response = func(*args, **kwargs)
-
-        try:
-            requests.patch(
-                urllib.parse.urljoin(self._base_url, "/api/intake"),
-                data=json.dumps(
-                    {
-                        "createdCallId": q_response.json()["id"],
-                        "model": response.get("model"),
-                        "body": response,
-                    },
-                ),
-                headers=headers,
-                timeout=300,
-            )
-        except Exception:
-            logger.debug("error while patching")
-        return response
 
     def initialize(
         self,
@@ -97,8 +69,16 @@ class OpenAiInstrumentorV1(BaseInstrumentor):
                     "wrap_method": wrap_method,
                 },
             )
-            wrap_function_wrapper(
-                "openai",
-                f"{wrap_object}.{wrap_method}",
-                self._wrap,
-            )
+
+            if not wrapped_method.get("async"):
+                wrap_function_wrapper(
+                    "openai",
+                    f"{wrap_object}.{wrap_method}",
+                    self._wrapper.wrap,
+                )
+            else:
+                wrap_function_wrapper(
+                    "openai",
+                    f"{wrap_object}.{wrap_method}",
+                    self._wrapper.wrap_async,
+                )
