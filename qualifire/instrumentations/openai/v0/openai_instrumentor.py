@@ -4,7 +4,7 @@ from openai.api_resources import ChatCompletion, Completion
 from wrapt import wrap_function_wrapper
 
 from ...base_instrumentor import BaseInstrumentor
-from ..shared import QualifireLogger
+from ..shared import OpenAIWrappers, QualifireLogger
 
 logger = logging.getLogger("qualifire")
 
@@ -51,57 +51,11 @@ class OpenAiInstrumentorV0(BaseInstrumentor):
             api_key=api_key,
             version=version,
         )
-
-    async def _wrap_async(self, func, instance, args, kwargs):
-        if hasattr(func, "__wrapped__"):
-            return func(*args, **kwargs)
-
-        try:
-            q_response = self._logger.log_request(
-                caller=f"{instance.__name__}.{func.__name__}",
-                body=kwargs,
-            )
-        except Exception:
-            q_response = {}
-
-        response = await func(*args, **kwargs)
-
-        try:
-            if q_response.get("id"):
-                self._logger.log_response(
-                    id=q_response["id"],
-                    model=response.get("model"),
-                    body=response,
-                )
-        except Exception:
-            logger.debug("error while patching")
-        return response
-
-    def _wrap(self, func, instance, args, kwargs):
-        if hasattr(func, "__wrapped__"):
-            return func(*args, **kwargs)
-
-        try:
-            q_response = self._logger.log_request(
-                caller=f"{instance.__name__}.{func.__name__}",
-                body=kwargs,
-            )
-        except Exception:
-            logger.debug("qualifire error while logging request")
-            q_response = {}
-
-        response = func(*args, **kwargs)
-
-        try:
-            if q_response.get("id"):
-                self._logger.log_response(
-                    id=q_response["id"],
-                    model=response.get("model"),
-                    body=response,
-                )
-        except Exception:
-            logger.debug("qualifire error while patching")
-        return response
+        self._wrapper = OpenAIWrappers(
+            base_url=base_url,
+            api_key=api_key,
+            version=version,
+        )
 
     def initialize(
         self,
@@ -120,11 +74,11 @@ class OpenAiInstrumentorV0(BaseInstrumentor):
                 wrap_function_wrapper(
                     "openai",
                     f"{wrap_object}.{wrap_method}",
-                    self._wrap,
+                    self._wrapper.wrap,
                 )
             else:
                 wrap_function_wrapper(
                     "openai",
                     f"{wrap_object}.{wrap_method}",
-                    self._wrap_async,
+                    self._wrapper.wrap_async,
                 )

@@ -7,6 +7,7 @@ from openai.resources import Chat, Completions
 from wrapt import wrap_function_wrapper
 
 from ...base_instrumentor import BaseInstrumentor
+from ..shared import QualifireLogger
 
 logger = logging.getLogger("qualifire")
 
@@ -36,6 +37,11 @@ class OpenAiInstrumentorV1(BaseInstrumentor):
         self._base_url = base_url
         self._api_key = api_key
         self._version = version
+        self._logger = QualifireLogger(
+            base_url=base_url,
+            api_key=api_key,
+            version=version,
+        )
 
     def _wrap(self, func, instance, args, kwargs):
         if hasattr(func, "__wrapped__"):
