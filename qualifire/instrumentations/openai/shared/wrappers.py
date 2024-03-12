@@ -23,8 +23,10 @@ class OpenAIWrappers:
         )
 
     async def wrap_async(self, func, instance, args, kwargs):
-        # if hasattr(func, "__wrapped__"):
-        #     return func(*args, **kwargs)
+        if hasattr(instance, "__qwrapped__"):
+            return await func(*args, **kwargs)
+        else:
+            setattr(instance, "__qwrapped__", True)
 
         try:
             q_response = self._logger.log_request(
@@ -56,8 +58,10 @@ class OpenAIWrappers:
         return response
 
     def wrap(self, func, instance, args, kwargs):
-        # if hasattr(func, "__wrapped__"):
-        #     return func(*args, **kwargs)
+        if hasattr(instance, "__qwrapped__"):
+            return func(*args, **kwargs)
+        else:
+            setattr(instance, "__qwrapped__", True)
 
         try:
             q_response = self._logger.log_request(
