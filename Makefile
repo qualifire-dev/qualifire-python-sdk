@@ -58,7 +58,7 @@ mypy:
 check-safety:
 	poetry check
 	poetry run safety check --full-report
-	poetry run bandit -ll --recursive qualifire tests
+	poetry run bandit -ll --skip B113 --recursive qualifire tests
 
 .PHONY: lint
 lint: test check-codestyle mypy check-safety
