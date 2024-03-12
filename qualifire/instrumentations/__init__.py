@@ -1,8 +1,6 @@
 from importlib.metadata import version
 
 from . import base_instrumentor
-from .openai.v0.openai_instrumentor import OpenAiInstrumentorV0
-from .openai.v1.openai_instrumentor import OpenAiInstrumentorV1
 
 
 def is_openai_v1():
@@ -10,6 +8,10 @@ def is_openai_v1():
 
 
 if is_openai_v1():
-    instrumentors = [OpenAiInstrumentorV0]
-else:
+    from .openai.v1.openai_instrumentor import OpenAiInstrumentorV1
+
     instrumentors = [OpenAiInstrumentorV1]
+else:
+    from .openai.v0.openai_instrumentor import OpenAiInstrumentorV0
+
+    instrumentors = [OpenAiInstrumentorV0]

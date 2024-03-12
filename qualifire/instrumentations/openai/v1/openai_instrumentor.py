@@ -1,6 +1,5 @@
 import logging
 
-from openai.resources import AsyncChat, AsyncCompletions, Chat, Completions
 from wrapt import wrap_function_wrapper
 
 from ...base_instrumentor import BaseInstrumentor
@@ -12,25 +11,21 @@ logger = logging.getLogger("qualifire")
 class OpenAiInstrumentorV1(BaseInstrumentor):
     WRAPPED_METHODS = [
         {
-            "func": Chat.completions.create,
-            "object": "ChatCompletion",
-            "method": "create",
+            "object": "openai.resources.chat.completions",
+            "method": "Completions.create",
         },
         {
-            "func": Completions.create,
-            "object": "Completion",
-            "method": "create",
+            "object": "openai.resources.completions",
+            "method": "Completions.create",
         },
         {
-            "func": AsyncChat.completions.create,
-            "object": "AsyncChat",
-            "method": "create",
+            "object": "openai.resources.completions",
+            "method": "AsyncCompletions.create",
             "async": True,
         },
         {
-            "func": AsyncCompletions.create,
-            "object": "AsyncCompletion",
-            "method": "create",
+            "object": "openai.resources.chat.completions",
+            "method": "AsyncCompletions.create",
             "async": True,
         },
     ]
@@ -72,13 +67,13 @@ class OpenAiInstrumentorV1(BaseInstrumentor):
 
             if not wrapped_method.get("async"):
                 wrap_function_wrapper(
-                    "openai",
-                    f"{wrap_object}.{wrap_method}",
+                    f"{wrap_object}",
+                    f"{wrap_method}",
                     self._wrapper.wrap,
                 )
             else:
                 wrap_function_wrapper(
-                    "openai",
-                    f"{wrap_object}.{wrap_method}",
+                    f"{wrap_object}",
+                    f"{wrap_method}",
                     self._wrapper.wrap_async,
                 )

@@ -24,12 +24,11 @@ class QualifireLogger:
             "X-qualifire-sdk-version": self._version,
         }
 
-    def log_request(self, caller: str, body: dict) -> None:
+    def log_request(self, body: dict) -> None:
         q_response = requests.post(
             urllib.parse.urljoin(self._base_url, "/api/intake"),
             data=json.dumps(
                 {
-                    "caller": caller,
                     "body": body,
                 }
             ),

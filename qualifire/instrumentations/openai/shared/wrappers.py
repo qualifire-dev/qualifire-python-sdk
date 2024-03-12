@@ -1,3 +1,4 @@
+import json
 import logging
 
 from . import QualifireLogger
@@ -22,37 +23,44 @@ class OpenAIWrappers:
         )
 
     async def wrap_async(self, func, instance, args, kwargs):
-        if hasattr(func, "__wrapped__"):
-            return func(*args, **kwargs)
+        # if hasattr(func, "__wrapped__"):
+        #     return func(*args, **kwargs)
 
         try:
             q_response = self._logger.log_request(
-                caller=f"{instance.__name__}.{func.__name__}",
                 body=kwargs,
             )
         except Exception:
+            logger.debug("qualifire error while logging request")
             q_response = {}
 
         response = await func(*args, **kwargs)
+
+        json_response = (
+            response.dict()
+            if hasattr(response, "dict")
+            else json.loads(
+                json.dumps(response, default=lambda o: getattr(o, "__dict__", str(o)))
+            )
+        )
 
         try:
             if q_response.get("id"):
                 self._logger.log_response(
                     id=q_response["id"],
-                    model=response.get("model"),
-                    body=response,
+                    model=json_response.get("model"),
+                    body=json_response,
                 )
         except Exception:
             logger.debug("error while patching")
         return response
 
     def wrap(self, func, instance, args, kwargs):
-        if hasattr(func, "__wrapped__"):
-            return func(*args, **kwargs)
+        # if hasattr(func, "__wrapped__"):
+        #     return func(*args, **kwargs)
 
         try:
             q_response = self._logger.log_request(
-                caller=f"{instance.__name__}.{func.__name__}",
                 body=kwargs,
             )
         except Exception:
@@ -61,12 +69,20 @@ class OpenAIWrappers:
 
         response = func(*args, **kwargs)
 
+        json_response = (
+            response.dict()
+            if hasattr(response, "dict")
+            else json.loads(
+                json.dumps(response, default=lambda o: getattr(o, "__dict__", str(o)))
+            )
+        )
+
         try:
             if q_response.get("id"):
                 self._logger.log_response(
                     id=q_response["id"],
-                    model=response.get("model"),
-                    body=response,
+                    model=json_response.get("model"),
+                    body=json_response,
                 )
         except Exception:
             logger.debug("qualifire error while patching")
