@@ -5,7 +5,7 @@ import os
 
 import pkg_resources
 
-from . import client
+from . import client, types
 
 logger = logging.getLogger("qualifire")
 QUALIFIRE_API_KEY_ENV_VAR = "QUALIFIRE_API_KEY"

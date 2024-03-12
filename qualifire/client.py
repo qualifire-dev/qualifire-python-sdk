@@ -1,6 +1,12 @@
+from typing import Union
+
+import json
 import logging
 
+import requests
+
 from .instrumentations import instrumentors
+from .types import EvaluationResponse, Input, Output
 
 logger = logging.getLogger("qualifire")
 
@@ -31,3 +37,29 @@ class Client:
                 logger.exception("error while initializing instrumentor.")
 
         logger.debug("initialized all instrumentors")
+
+    def evaluate(
+        self,
+        input: Union[str, Input],
+        output: Union[str, Output],
+        block: bool = True,
+    ) -> Union[EvaluationResponse, None]:
+
+        url = f"{self._base_url}/api/evaluation/v1"
+        body = json.dumps({"async": block, "input": input, "output": output})
+        headers = {
+            "Content-Type": "application/json",
+            "X-qualifire-key": self.sdk_key,
+        }
+
+        if block:
+            requests.post(url, headers=headers, data=body)
+            return None
+        else:
+            response = requests.post(url, headers=headers, data=body)
+
+            if response.status_code != 200:
+                raise Exception(f"Qualifire API error: {response.text}")
+
+            jsonResponse = response.json()
+            return EvaluationResponse(**jsonResponse)
