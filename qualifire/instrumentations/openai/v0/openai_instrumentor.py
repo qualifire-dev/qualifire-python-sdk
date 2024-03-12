@@ -1,6 +1,5 @@
 import logging
 
-from openai.api_resources import ChatCompletion, Completion
 from wrapt import wrap_function_wrapper
 
 from ...base_instrumentor import BaseInstrumentor
@@ -12,25 +11,21 @@ logger = logging.getLogger("qualifire")
 class OpenAiInstrumentorV0(BaseInstrumentor):
     WRAPPED_METHODS = [
         {
-            "func": ChatCompletion.create,
             "object": "ChatCompletion",
             "method": "create",
             "async": False,
         },
         {
-            "func": Completion.create,
             "object": "Completion",
             "method": "create",
             "async": False,
         },
         {
-            "func": ChatCompletion.acreate,
             "object": "ChatCompletion",
             "method": "acreate",
             "async": True,
         },
         {
-            "func": Completion.acreate,
             "object": "Completion",
             "method": "acreate",
             "async": True,
