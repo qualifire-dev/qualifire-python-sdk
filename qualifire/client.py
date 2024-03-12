@@ -1,12 +1,23 @@
+from typing import Union
+
+import json
 import logging
 
+import requests
+
 from .instrumentations import instrumentors
+from .types import EvaluationResponse, Input, Output
 
 logger = logging.getLogger("qualifire")
 
 
 class Client:
-    def __init__(self, base_url: str, api_key: str, version: str) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://gateway.qualifire.ai",
+        version: str = None,
+    ) -> None:
         self._base_url = base_url
         self._api_key = api_key
         self._version = version
@@ -31,3 +42,29 @@ class Client:
                 logger.exception("error while initializing instrumentor.")
 
         logger.debug("initialized all instrumentors")
+
+    def evaluate(
+        self,
+        input: Union[str, Input],
+        output: Union[str, Output],
+        block: bool = True,
+    ) -> Union[EvaluationResponse, None]:
+
+        url = f"{self._base_url}/api/evaluation/v1"
+        body = json.dumps({"async": block, "input": input, "output": output})
+        headers = {
+            "Content-Type": "application/json",
+            "X-qualifire-key": self._api_key,
+        }
+
+        if block:
+            requests.post(url, headers=headers, data=body)
+            return None
+        else:
+            response = requests.post(url, headers=headers, data=body)
+
+            if response.status_code != 200:
+                raise Exception(f"Qualifire API error: {response.text}")
+
+            jsonResponse = response.json()
+            return EvaluationResponse(**jsonResponse)

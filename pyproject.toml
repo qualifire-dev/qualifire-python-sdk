@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "qualifire"
-version = "0.5.7"
+version = "0.5.8"
 description = "Qualifire PYthon SDK"
 readme = "README.md"
 authors = ["qualifire-dev <dror@qualifire.ai>"]
@@ -32,7 +32,6 @@ classifiers = [  #! Update me
 
 [tool.poetry.dependencies]
 python = "^3.8"
-openai = "^0.28.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"
