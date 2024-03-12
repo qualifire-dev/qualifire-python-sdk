@@ -12,7 +12,12 @@ logger = logging.getLogger("qualifire")
 
 
 class Client:
-    def __init__(self, base_url: str, api_key: str, version: str) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://gateway.qualifire.ai",
+        version: str = None,
+    ) -> None:
         self._base_url = base_url
         self._api_key = api_key
         self._version = version
@@ -49,7 +54,7 @@ class Client:
         body = json.dumps({"async": block, "input": input, "output": output})
         headers = {
             "Content-Type": "application/json",
-            "X-qualifire-key": self.sdk_key,
+            "X-qualifire-key": self._api_key,
         }
 
         if block:

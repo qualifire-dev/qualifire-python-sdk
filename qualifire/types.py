@@ -33,9 +33,9 @@ class Input:
 @dataclass
 class Output:
     id: str
-    created: Optional[int] = None
     model: str
     choices: List[Choice] = field(default_factory=list)
+    created: Optional[int] = None
     usage: Optional[Usage] = None
     system_fingerprint: Optional[str] = None
 
@@ -77,7 +77,7 @@ class ScoreBreakdownItem:
 @dataclass
 class EvaluationResponse:
     success: bool
-    evaluationResults: List[EvaluationResult] = field(default_factory=list)
     score: float
     status: str
+    evaluationResults: List[EvaluationResult] = field(default_factory=list)
     scoreBreakdown: Dict[str, ScoreBreakdownItem] = field(default_factory=dict)
