@@ -98,7 +98,6 @@ class OpenAIWrappers:
             return func(*args, **kwargs)
         else:
             setattr(instance, "__qwrapped__", True)
-
         try:
             q_response = self._logger.log_request(
                 body=kwargs,

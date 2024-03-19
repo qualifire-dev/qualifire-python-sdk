@@ -5,8 +5,8 @@ from . import base_instrumentor
 
 def is_openai_v1():
     try:
-        version = version("openai") >= "1.0.0"
-        return version
+        v = version("openai") >= "1.0.0"
+        return v
     except:
         return None
 

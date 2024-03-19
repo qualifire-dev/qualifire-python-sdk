@@ -39,7 +39,6 @@ class QualifireLogger:
         return q_response.json()
 
     def log_response(self, id: str, model: str, body: dict) -> None:
-
         requests.patch(
             urllib.parse.urljoin(self._base_url, "/api/intake"),
             data=json.dumps(
