@@ -15,8 +15,6 @@ jobs:
         uses: actions/setup-python@v4.7.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Creadentials search in source code - TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3.69.0
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
@@ -34,7 +32,8 @@ jobs:
       - name: Run style checks
         run: |
           make check-codestyle
-
+      - name: Creadentials search in source code - TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.69.0
       - name: Run tests
         run: |
           make test
