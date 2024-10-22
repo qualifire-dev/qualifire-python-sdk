@@ -51,13 +51,13 @@ class Client:
     ) -> Union[EvaluationResponse, None]:
 
         url = f"{self._base_url}/api/evaluation/v1"
-        body = json.dumps({"async": block, "input": input, "output": output})
+        body = json.dumps({"async": not block, "input": input, "output": output})
         headers = {
             "Content-Type": "application/json",
             "X-qualifire-key": self._api_key,
         }
 
-        if block:
+        if not block:
             requests.post(url, headers=headers, data=body)
             return None
         else:
