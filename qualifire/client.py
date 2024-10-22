@@ -51,13 +51,13 @@ class Client:
     ) -> Union[EvaluationResponse, None]:
 
         url = f"{self._base_url}/api/evaluation/v1"
-        body = json.dumps({"async": block, "input": input, "output": output})
+        body = json.dumps({"async": block is False, "input": input, "output": output})
         headers = {
             "Content-Type": "application/json",
             "X-qualifire-key": self._api_key,
         }
 
-        if block:
+        if block is False:
             requests.post(url, headers=headers, data=body)
             return None
         else:
@@ -67,4 +67,4 @@ class Client:
                 raise Exception(f"Qualifire API error: {response.text}")
 
             jsonResponse = response.json()
-            return EvaluationResponse(**jsonResponse)
+            return jsonResponse
