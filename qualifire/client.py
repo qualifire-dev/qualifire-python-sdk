@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, Union
 
 import json
 import logging
@@ -6,7 +6,7 @@ import logging
 import requests
 
 from .instrumentations import instrumentors
-from .types import EvaluationResponse, Input, Output
+from .types import Input, Output
 
 logger = logging.getLogger("qualifire")
 
@@ -48,7 +48,7 @@ class Client:
         input: Union[str, Input],
         output: Union[str, Output],
         block: bool = True,
-    ) -> Union[EvaluationResponse, None]:
+    ) -> Any:
 
         url = f"{self._base_url}/api/evaluation/v1"
         body = json.dumps({"async": block is False, "input": input, "output": output})
@@ -67,4 +67,5 @@ class Client:
                 raise Exception(f"Qualifire API error: {response.text}")
 
             jsonResponse = response.json()
+
             return jsonResponse
