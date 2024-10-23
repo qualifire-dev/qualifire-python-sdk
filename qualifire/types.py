@@ -81,3 +81,4 @@ class EvaluationResponse:
     status: str
     evaluationResults: List[EvaluationResult] = field(default_factory=list)
     scoreBreakdown: Dict[str, ScoreBreakdownItem] = field(default_factory=dict)
+    defaultResponse: Optional[str] = None
