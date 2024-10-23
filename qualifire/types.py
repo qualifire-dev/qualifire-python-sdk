@@ -82,3 +82,6 @@ class EvaluationResponse:
     evaluationResults: List[EvaluationResult] = field(default_factory=list)
     scoreBreakdown: Dict[str, ScoreBreakdownItem] = field(default_factory=dict)
     defaultResponse: Optional[str] = None
+    block: Optional[bool] = None
+    retry: Optional[bool] = None
+    retryCap: Optional[int] = None
