@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Dict, List, Optional, Union
 
 import json
 import logging
@@ -7,7 +7,7 @@ from dataclasses import asdict
 import requests
 
 from .instrumentations import instrumentors
-from .types import EvaluationRequest, EvaluationResponse
+from .types import EvaluationRequest, EvaluationResponse, LLMMessage, SyntaxCheckArgs
 
 logger = logging.getLogger("qualifire")
 
@@ -50,73 +50,102 @@ class Client:
         self,
         input: str,
         output: str,
-        assertions: List[str] = None,
-        consistency_check: bool = False,
+        assertions: Optional[List[str]] = None,
         dangerous_content_check: bool = False,
+        grounding_check: bool = False,
         hallucinations_check: bool = False,
         harassment_check: bool = False,
         hate_speech_check: bool = False,
+        instructions_following_check: bool = False,
+        messages: Optional[List[LLMMessage]] = None,
         pii_check: bool = False,
         prompt_injections: bool = False,
         sexual_content_check: bool = False,
+        syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
 
-        :param assertions: A list of assertions to check.
-        :param consistency_check: Whether to check for consistency.
-        :param dangerous_content_check: Whether to check for dangerous content.
-        :param hallucinations_check: Whether to check for hallucinations.
-        :param harassment_check: Whether to check for harassment.
-        :param hate_speech_check: Whether to check for hate speech.
-        :param input: The input to evaluate.
-        :param messages: The messages to evaluate.
-        :param output: The output to evaluate.
-        :param pii_check: Whether to check for personally identifiable information.
-        :param prompt_injections: Whether to check for prompt injections.
-        :param responseFunctionCalls: The response function calls to check.
+        :param input: The primary input for the evaluation.
+        :param output: The primary output (e.g., LLM response) to evaluate.
+        :param assertions: A list of custom assertions to check against the output.
+        :param consistency_check: Check for consistency between
+        input/output and context.
+        :param dangerous_content_check: Check for dangerous content generation.
+        :param grounding_check: Check if the output is grounded in the provided
+                                input/context.
+        :param hallucinations_check: Check for factual inaccuracies or hallucinations.
+        :param harassment_check: Check for harassing content.
+        :param hate_speech_check: Check for hate speech.
+        :param instructions_following_check: Check if the output follows instructions
+                                             in the input/messages.
+        :param messages: List of message objects representing conversation history.
+        :param pii_check: Check for personally identifiable information.
+        :param prompt_injections: Check for attempts at prompt injection.
+        :param responseFunctionCalls: Expected function calls in the response
+        (if applicable).
+        :param sexual_content_check: Check for sexually explicit content.
+        :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
 
-        :return: An EvaluationResponse object.
+        :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
 
         Example:
 
         ```python
         from qualifire import Qualifire
+        from qualifire.types import LLMMessage, SyntaxCheckArgs
 
         qualifire = Qualifire(api_key="your_api_key")
 
         evaluation_response = qualifire.evaluate(
-            assertions=["The output should be a list of integers."],
+            input="Translate 'hello' to French and provide the result in JSON format.",
+            output='{"translation": "bonjour"}',
+            assertions=["The output must contain the key 'translation'"],
             consistency_check=True,
             dangerous_content_check=True,
+            grounding_check=True,
             hallucinations_check=True,
             harassment_check=True,
             hate_speech_check=True,
-            input="Write a list of integers.",
-            output="[1, 2, 3]",
+            instructions_following_check=True,
+            messages=[
+                LLMMessage(
+                    role="user",
+                    content="Translate 'hello' to French and provide JSON."
+                ),
+                LLMMessage(role="assistant", content='{"translation": "bonjour"}')
+            ],
             pii_check=True,
             prompt_injections=True,
-            responseFunctionCalls="Write a list of integers.",
+            # responseFunctionCalls="some_function_call", # Optional
             sexual_content_check=True,
+            syntax_checks={
+                "json": SyntaxCheckArgs(args="strict") # Example syntax check
+            }
         )
+        ```
         """
 
         url = f"{self._base_url}/api/evaluation/evaluate"
         request = EvaluationRequest(
+            input=input,
+            output=output,
             assertions=assertions,
-            consistency_check=consistency_check,
             dangerous_content_check=dangerous_content_check,
+            grounding_check=grounding_check,
             hallucinations_check=hallucinations_check,
             harassment_check=harassment_check,
             hate_speech_check=hate_speech_check,
-            input=input,
-            output=output,
+            instructions_following_check=instructions_following_check,
+            messages=messages,
             pii_check=pii_check,
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
+            syntax_checks=syntax_checks,
         )
 
+        # Filter out None values before dumping to JSON
         body = json.dumps(asdict(request))
         headers = {
             "Content-Type": "application/json",

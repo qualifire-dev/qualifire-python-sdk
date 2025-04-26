@@ -1,6 +1,6 @@
-from typing import List
+from typing import Dict, List, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -10,10 +10,14 @@ class LLMMessage:
 
 
 @dataclass
+class SyntaxCheckArgs:
+    args: str
+
+
+@dataclass
 class EvaluationRequest:
     input: str
     output: str
-    consistency_check: bool
     dangerous_content_check: bool
     hallucinations_check: bool
     harassment_check: bool
@@ -21,8 +25,11 @@ class EvaluationRequest:
     pii_check: bool
     prompt_injections: bool
     sexual_content_check: bool
-    messages: List[LLMMessage] = None
-    assertions: List[str] = None
+    grounding_check: bool = False
+    instructions_following_check: bool = False
+    syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None
+    messages: Optional[List[LLMMessage]] = field(default_factory=list)
+    assertions: Optional[List[str]] = field(default_factory=list)
 
 
 @dataclass
