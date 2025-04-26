@@ -6,12 +6,13 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "qualifire"
 version = "0.6.3"
-description = "Qualifire PYthon SDK"
+description = "Qualifire Python SDK"
 readme = "README.md"
 authors = ["qualifire-dev <dror@qualifire.ai>"]
 license = "MIT"
 repository = "https://github.com/qualifire_dev/qualifire"
 homepage = "https://github.com/qualifire_dev/qualifire"
+packages = [{include = "qualifire"}]
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
 keywords = []  #! Update me
