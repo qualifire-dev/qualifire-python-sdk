@@ -6,7 +6,6 @@ from dataclasses import asdict
 
 import requests
 
-from .instrumentations import instrumentors
 from .types import EvaluationRequest, EvaluationResponse, LLMMessage, SyntaxCheckArgs
 
 logger = logging.getLogger("qualifire")
@@ -24,27 +23,6 @@ class Client:
         self._api_key = api_key
         self._version = version
         self._debug = debug
-
-    def initialize(self):
-        for instrumentor_class in instrumentors:
-            logger.debug(
-                "initializing instrumentor",
-                {
-                    "instrumentor": instrumentor_class.__name__,
-                },
-            )
-            try:
-                instrumentor = instrumentor_class(
-                    api_key=self._api_key,
-                    base_url=self._base_url,
-                    version=self._version,
-                )
-
-                instrumentor.initialize()
-            except Exception:
-                logger.exception("error while initializing instrumentor.")
-
-        logger.debug("initialized all instrumentors")
 
     def evaluate(
         self,
