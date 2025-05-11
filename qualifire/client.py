@@ -1,12 +1,17 @@
-from typing import Dict, List, Optional, Union
-
 import json
 import logging
 from dataclasses import asdict
+from typing import Dict, List, Optional, Union
 
 import requests
 
-from .types import EvaluationRequest, EvaluationResponse, LLMMessage, SyntaxCheckArgs
+from .types import (
+    EvaluationRequest,
+    EvaluationResponse,
+    LLMMessage,
+    SyntaxCheckArgs,
+)
+from .utils import get_api_key, get_base_url
 
 logger = logging.getLogger("qualifire")
 
@@ -14,13 +19,13 @@ logger = logging.getLogger("qualifire")
 class Client:
     def __init__(
         self,
-        api_key: str,
-        base_url: str = "https://proxy.qualifire.ai",
-        version: str = None,
+        api_key: Optional[str],
+        base_url: Optional[str] = None,
+        version: Optional[str] = None,
         debug: bool = False,
     ) -> None:
-        self._base_url = base_url
-        self._api_key = api_key
+        self._base_url = base_url or get_base_url()
+        self._api_key = api_key or get_api_key()
         self._version = version
         self._debug = debug
 
@@ -47,8 +52,6 @@ class Client:
         :param input: The primary input for the evaluation.
         :param output: The primary output (e.g., LLM response) to evaluate.
         :param assertions: A list of custom assertions to check against the output.
-        :param consistency_check: Check for consistency between
-        input/output and context.
         :param dangerous_content_check: Check for dangerous content generation.
         :param grounding_check: Check if the output is grounded in the provided
                                 input/context.
@@ -60,8 +63,6 @@ class Client:
         :param messages: List of message objects representing conversation history.
         :param pii_check: Check for personally identifiable information.
         :param prompt_injections: Check for attempts at prompt injection.
-        :param responseFunctionCalls: Expected function calls in the response
-        (if applicable).
         :param sexual_content_check: Check for sexually explicit content.
         :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
 
@@ -80,7 +81,6 @@ class Client:
             input="Translate 'hello' to French and provide the result in JSON format.",
             output='{"translation": "bonjour"}',
             assertions=["The output must contain the key 'translation'"],
-            consistency_check=True,
             dangerous_content_check=True,
             grounding_check=True,
             hallucinations_check=True,
@@ -96,7 +96,6 @@ class Client:
             ],
             pii_check=True,
             prompt_injections=True,
-            # responseFunctionCalls="some_function_call", # Optional
             sexual_content_check=True,
             syntax_checks={
                 "json": SyntaxCheckArgs(args="strict") # Example syntax check
@@ -135,16 +134,15 @@ class Client:
         if response.status_code != 200:
             raise Exception(f"Qualifire API error: {response.text}")
 
-        jsonResponse = response.json()
-        return EvaluationResponse(**jsonResponse)
+        json_response = response.json()
+        return EvaluationResponse(**json_response)
 
     def invoke_evaluation(
         self,
         input: str,
         output: str,
         evaluation_id: str,
-    ):
-
+    ) -> EvaluationResponse:
         url = f"{self._base_url}/api/evaluation/invoke/"
 
         payload = {
@@ -163,5 +161,5 @@ class Client:
                 response.raise_for_status()
             raise Exception(f"Qualifire API error: {response.text}")
 
-        jsonResponse = response.json()
-        return EvaluationResponse(**jsonResponse)
+        json_response = response.json()
+        return EvaluationResponse(**json_response)
