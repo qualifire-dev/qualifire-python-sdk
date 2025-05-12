@@ -26,6 +26,8 @@ def test_get_api_key(
 ) -> None:
     if env_value is not None:
         os.environ[QUALIFIRE_API_KEY_ENV_VAR] = env_value
+    else:
+        os.environ.pop(QUALIFIRE_API_KEY_ENV_VAR, None)
 
     if expected_error:
         with pytest.raises(ValueError):
@@ -48,5 +50,7 @@ def test_get_base_url(
 ) -> None:
     if env_value is not None:
         os.environ[QUALIFIRE_BASE_URL_ENV_VAR] = env_value
+    else:
+        os.environ.pop(QUALIFIRE_BASE_URL_ENV_VAR, None)
 
     assert get_base_url() == expected_result
