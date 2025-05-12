@@ -3,7 +3,12 @@ from typing import Any, Callable, Optional, TypeVar
 import os
 import sys
 
-from traceloop.sdk import Traceloop
+try:
+    from traceloop.sdk import Traceloop
+
+    traceloop_installed = True
+except ImportError:
+    traceloop_installed = False
 
 from .utils import get_api_key, get_base_url
 
@@ -38,5 +43,11 @@ def __configure_tracer(api_key: str) -> None:
 
 
 def init(api_key: Optional[str] = None) -> None:
+    if not traceloop_installed:
+        if sys.version_info < (3, 10):
+            raise RuntimeError("qualifire.init requires Python 3.10 or higher")
+        else:
+            raise RuntimeError("Dependency error, please reinstall qualifire-sdk")
+
     api_key = api_key or get_api_key()
     __configure_tracer(api_key)
