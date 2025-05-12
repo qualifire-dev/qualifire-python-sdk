@@ -2,7 +2,7 @@
 
 import logging
 
-from . import client, types, utils, tracer_init
+from . import client, tracer_init, types, utils
 from .tracer_init import init
 
 logger = logging.getLogger("qualifire")

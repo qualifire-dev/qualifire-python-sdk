@@ -1,7 +1,8 @@
+from typing import Dict, List, Optional, Union
+
 import json
 import logging
 from dataclasses import asdict
-from typing import Dict, List, Optional, Union
 
 import requests
 

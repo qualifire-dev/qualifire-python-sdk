@@ -1,6 +1,7 @@
+from typing import Any, Callable, Optional, TypeVar
+
 import os
 import sys
-from typing import TypeVar, Callable, Optional, Any
 
 from traceloop.sdk import Traceloop
 
