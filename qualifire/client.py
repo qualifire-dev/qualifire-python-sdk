@@ -6,12 +6,7 @@ from dataclasses import asdict
 
 import requests
 
-from .types import (
-    EvaluationRequest,
-    EvaluationResponse,
-    LLMMessage,
-    SyntaxCheckArgs,
-)
+from .types import EvaluationRequest, EvaluationResponse, LLMMessage, SyntaxCheckArgs
 from .utils import get_api_key, get_base_url
 
 logger = logging.getLogger("qualifire")
