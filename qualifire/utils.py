@@ -1,6 +1,10 @@
 import os
 
-from . import _DEFAULT_BASE_URL, QUALIFIRE_API_KEY_ENV_VAR, QUALIFIRE_BASE_URL_ENV_VAR
+from .consts import (
+    _DEFAULT_BASE_URL,
+    QUALIFIRE_API_KEY_ENV_VAR,
+    QUALIFIRE_BASE_URL_ENV_VAR,
+)
 
 
 def get_api_key() -> str:

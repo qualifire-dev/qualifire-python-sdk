@@ -2,14 +2,10 @@
 
 import logging
 
-from . import client, tracer_init, types, utils
+from . import client, consts, tracer_init, types, utils
 from .tracer_init import init
 
 logger = logging.getLogger("qualifire")
-
-QUALIFIRE_API_KEY_ENV_VAR = "QUALIFIRE_API_KEY"
-QUALIFIRE_BASE_URL_ENV_VAR = "QUALIFIRE_BASE_URL"
-_DEFAULT_BASE_URL = "https://proxy.qualifire.ai/"
 
 
 from importlib import metadata as importlib_metadata
