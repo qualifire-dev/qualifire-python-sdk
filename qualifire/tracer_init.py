@@ -1,7 +1,6 @@
-from typing import Any, Callable, Optional, TypeVar
-
 import os
 import sys
+from typing import Any, Callable, Optional, TypeVar
 
 from traceloop.sdk import Traceloop
 
@@ -25,6 +24,10 @@ def __suppress_prints(
 
 
 def __configure_tracer(api_key: str) -> None:
+    # traceloop uses env for those configs
+    os.environ["TRACELOOP_METRICS_ENABLED"] = "false"
+    os.environ["TRACELOOP_LOGGING_ENABLED"] = "false"
+
     __suppress_prints(
         Traceloop.init,
         app_name="qualifire-agent",
