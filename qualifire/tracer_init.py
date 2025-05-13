@@ -39,6 +39,8 @@ def __configure_tracer(api_key: str) -> None:
         app_name="qualifire-agent",
         api_endpoint=f"{get_base_url()}/telemetry",  # /v1/traces is automatically added  # noqa: E501
         headers={"X-Qualifire-API-Key": api_key},
+        telemetry_enabled=False,
+        traceloop_sync_enabled=False,
     )
 
 
