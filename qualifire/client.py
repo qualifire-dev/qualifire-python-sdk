@@ -120,20 +120,53 @@ class Client:
         qualifire = Qualifire(api_key="your_api_key")
 
         evaluation_response = qualifire.evaluate(
-            input="What is the weather tomorrow in New York?",
-            output="",
             messages=[
                 LLMMessage(
                     role="user",
-                    content="Translate 'hello' to French and provide JSON."
+                    content="What is the weather tomorrow in New York?",
                 ),
-                LLMMessage(role="assistant", content='{"translation": "bonjour"}')
+                LLMMessage(
+                    role="assistant",
+                    content='please run the following tool'
+                    tool_calls=[
+                        LLMToolCall(
+                           "id": "tool_call_id",
+                            "name": "get_weather_forecast",
+                            "arguments": {
+                                "location": "New York, NY",
+                                "date": "tomorrow",
+                            },
+                        ),
+                    ],
+                ),
             ],
-            available_tools=[],
+            available_tools=[
+                {
+                    "name": "get_weather_forecast",
+                    "description": "Provides the weather forecast for a given location and date.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "location": {
+                                "type": "string",
+                                "description": "The city and state, e.g., San Francisco, CA",
+                            },
+                            "date": {
+                                "type": "string",
+                                "description": "The date for the forecast, e.g., tomorrow, or YYYY-MM-DD",
+                            },
+                        },
+                        "required": [
+                            "location",
+                            "date",
+                        ],
+                    },
+                },
+            ],
             tool_selection_quality_check=True,
         )
         ```
-        """
+        """  # noqa E501
         if not messages and not (input and output):
             raise ValueError(
                 "Either Input and output or messages must be provided.",
