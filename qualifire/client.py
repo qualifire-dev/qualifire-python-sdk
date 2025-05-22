@@ -6,7 +6,13 @@ from dataclasses import asdict
 
 import requests
 
-from .types import EvaluationRequest, EvaluationResponse, LLMMessage, SyntaxCheckArgs
+from .types import (
+    EvaluationRequest,
+    EvaluationResponse,
+    LLMMessage,
+    LLMTooLDefinition,
+    SyntaxCheckArgs,
+)
 from .utils import get_api_key, get_base_url
 
 logger = logging.getLogger("qualifire")
@@ -27,8 +33,10 @@ class Client:
 
     def evaluate(
         self,
-        input: str,
-        output: str,
+        input: Optional[str] = None,
+        output: Optional[str] = None,
+        messages: Optional[List[LLMMessage]] = None,
+        available_tools: Optional[List[LLMTooLDefinition]] = None,
         assertions: Optional[List[str]] = None,
         dangerous_content_check: bool = False,
         grounding_check: bool = False,
@@ -36,17 +44,21 @@ class Client:
         harassment_check: bool = False,
         hate_speech_check: bool = False,
         instructions_following_check: bool = False,
-        messages: Optional[List[LLMMessage]] = None,
         pii_check: bool = False,
         prompt_injections: bool = False,
         sexual_content_check: bool = False,
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
+        tool_selection_quality_check: bool = False,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
 
         :param input: The primary input for the evaluation.
         :param output: The primary output (e.g., LLM response) to evaluate.
+        :param messages: List of message objects representing conversation history.
+            Must be set if tool_selection_quality_check is True.
+        :param available_tools: List of available tools.
+            Must be set if tool_selection_quality_check is True.
         :param assertions: A list of custom assertions to check against the output.
         :param dangerous_content_check: Check for dangerous content generation.
         :param grounding_check: Check if the output is grounded in the provided
@@ -56,11 +68,12 @@ class Client:
         :param hate_speech_check: Check for hate speech.
         :param instructions_following_check: Check if the output follows instructions
                                              in the input/messages.
-        :param messages: List of message objects representing conversation history.
         :param pii_check: Check for personally identifiable information.
         :param prompt_injections: Check for attempts at prompt injection.
         :param sexual_content_check: Check for sexually explicit content.
         :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
+        :param tool_selection_quality_check: Check for tool selection quality.
+            Only works when `available_tools` and `messages` are provided.
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -95,15 +108,54 @@ class Client:
             sexual_content_check=True,
             syntax_checks={
                 "json": SyntaxCheckArgs(args="strict") # Example syntax check
-            }
+            },
+        )
+        ```
+
+        Example with tools:
+        ```python
+        from qualifire import Qualifire
+        from qualifire.types import LLMMessage,
+
+        qualifire = Qualifire(api_key="your_api_key")
+
+        evaluation_response = qualifire.evaluate(
+            input="What is the weather tomorrow in New York?",
+            output="",
+            messages=[
+                LLMMessage(
+                    role="user",
+                    content="Translate 'hello' to French and provide JSON."
+                ),
+                LLMMessage(role="assistant", content='{"translation": "bonjour"}')
+            ],
+            available_tools=[],
+            tool_selection_quality_check=True,
         )
         ```
         """
+        if not messages and not (input and output):
+            raise ValueError(
+                "Either Input and output or messages must be provided.",
+            )
+
+        if tool_selection_quality_check and not messages:
+            raise ValueError(
+                "messages must be provided in conjunction "
+                "with tool_selection_quality_check=True."
+            )
+        if tool_selection_quality_check and not available_tools:
+            raise ValueError(
+                "available_tools must be provided in conjunction "
+                "with tool_selection_quality_check=True."
+            )
 
         url = f"{self._base_url}/api/evaluation/evaluate"
         request = EvaluationRequest(
             input=input,
             output=output,
+            messages=messages,
+            available_tools=available_tools,
             assertions=assertions,
             dangerous_content_check=dangerous_content_check,
             grounding_check=grounding_check,
@@ -111,11 +163,11 @@ class Client:
             harassment_check=harassment_check,
             hate_speech_check=hate_speech_check,
             instructions_following_check=instructions_following_check,
-            messages=messages,
             pii_check=pii_check,
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
+            tool_selection_quality_check=tool_selection_quality_check,
         )
 
         # Filter out None values before dumping to JSON
