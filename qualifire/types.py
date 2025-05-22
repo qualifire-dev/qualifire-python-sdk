@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class LLMTooLDefinition:
+class LLMToolDefinition:
     name: str
     description: str
     parameters: Dict[str, Any]
@@ -34,7 +34,7 @@ class EvaluationRequest:
     input: Optional[str] = None
     output: Optional[str] = None
     messages: Optional[List[LLMMessage]] = field(default_factory=list)
-    available_tools: Optional[List[LLMTooLDefinition]] = None
+    available_tools: Optional[List[LLMToolDefinition]] = None
     dangerous_content_check: bool = False
     hallucinations_check: bool = False
     harassment_check: bool = False

@@ -10,7 +10,7 @@ from .types import (
     EvaluationRequest,
     EvaluationResponse,
     LLMMessage,
-    LLMTooLDefinition,
+    LLMToolDefinition,
     SyntaxCheckArgs,
 )
 from .utils import get_api_key, get_base_url
@@ -36,7 +36,7 @@ class Client:
         input: Optional[str] = None,
         output: Optional[str] = None,
         messages: Optional[List[LLMMessage]] = None,
-        available_tools: Optional[List[LLMTooLDefinition]] = None,
+        available_tools: Optional[List[LLMToolDefinition]] = None,
         assertions: Optional[List[str]] = None,
         dangerous_content_check: bool = False,
         grounding_check: bool = False,
@@ -115,7 +115,7 @@ class Client:
         Example with tools:
         ```python
         from qualifire import Qualifire
-        from qualifire.types import LLMMessage,
+        from qualifire.types import LLMMessage, LLMToolDefinition
 
         qualifire = Qualifire(api_key="your_api_key")
 
@@ -141,10 +141,10 @@ class Client:
                 ),
             ],
             available_tools=[
-                {
-                    "name": "get_weather_forecast",
-                    "description": "Provides the weather forecast for a given location and date.",
-                    "parameters": {
+                LLMToolDefinition(
+                    name="get_weather_forecast",
+                    description="Provides the weather forecast for a given location and date.",
+                    parameters={
                         "type": "object",
                         "properties": {
                             "location": {
@@ -161,7 +161,7 @@ class Client:
                             "date",
                         ],
                     },
-                },
+                ),
             ],
             tool_selection_quality_check=True,
         )
