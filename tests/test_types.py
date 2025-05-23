@@ -1,3 +1,5 @@
+import contextlib
+
 import pytest
 
 from qualifire.types import EvaluationRequest, LLMMessage, LLMToolDefinition
@@ -65,13 +67,12 @@ class TestEvaluationRequest:
         output,
         expected_error,
     ):
-        if expected_error:
-            with pytest.raises(ValueError):
-                EvaluationRequest(
-                    messages=messages,
-                    input=input_,
-                    output=output,
-                )
+        with pytest.raises(ValueError) if expected_error else contextlib.nullcontext():
+            EvaluationRequest(
+                messages=messages,
+                input=input_,
+                output=output,
+            )
 
     @pytest.mark.parametrize(
         "tsq_check,messages,available_tools,expected_error",
@@ -103,10 +104,9 @@ class TestEvaluationRequest:
         available_tools,
         expected_error,
     ):
-        if expected_error:
-            with pytest.raises(ValueError):
-                EvaluationRequest(
-                    messages=messages,
-                    available_tools=available_tools,
-                    tool_selection_quality_check=tsq_check,
-                )
+        with pytest.raises(ValueError) if expected_error else contextlib.nullcontext():
+            EvaluationRequest(
+                messages=messages,
+                available_tools=available_tools,
+                tool_selection_quality_check=tsq_check,
+            )
