@@ -106,6 +106,7 @@ class TestEvaluationRequest:
     ):
         with pytest.raises(ValueError) if expected_error else contextlib.nullcontext():
             EvaluationRequest(
+                input="input",  # To pass the messages-input-output validation
                 messages=messages,
                 available_tools=available_tools,
                 tool_selection_quality_check=tsq_check,
