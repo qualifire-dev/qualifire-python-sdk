@@ -48,6 +48,28 @@ class EvaluationRequest:
     assertions: Optional[List[str]] = field(default_factory=list)
     tool_selection_quality_check: bool = False
 
+    def __post_init__(self):
+        self._validate_messages_input_output()
+        self._validate_tsq_requirements()
+
+    def _validate_messages_input_output(self):
+        if not self.messages and not self.input and not self.output:
+            raise ValueError(
+                "At least one of messages, input, or output must be set",
+            )
+
+    def _validate_tsq_requirements(self):
+        if self.tool_selection_quality_check and not self.messages:
+            raise ValueError(
+                "messages must be provided in conjunction "
+                "with tool_selection_quality_check=True."
+            )
+        if self.tool_selection_quality_check and not self.available_tools:
+            raise ValueError(
+                "available_tools must be provided in conjunction "
+                "with tool_selection_quality_check=True."
+            )
+
 
 @dataclass
 class EvaluationResult:

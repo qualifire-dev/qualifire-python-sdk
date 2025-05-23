@@ -167,22 +167,6 @@ class Client:
         )
         ```
         """  # noqa E501
-        if not messages and not (input and output):
-            raise ValueError(
-                "Either Input and output or messages must be provided.",
-            )
-
-        if tool_selection_quality_check and not messages:
-            raise ValueError(
-                "messages must be provided in conjunction "
-                "with tool_selection_quality_check=True."
-            )
-        if tool_selection_quality_check and not available_tools:
-            raise ValueError(
-                "available_tools must be provided in conjunction "
-                "with tool_selection_quality_check=True."
-            )
-
         url = f"{self._base_url}/api/evaluation/evaluate"
         request = EvaluationRequest(
             input=input,
