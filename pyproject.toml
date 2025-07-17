@@ -33,7 +33,7 @@ classifiers = [  #! Update me
 
 [tool.poetry.dependencies]
 python = "^3.8"
-traceloop-sdk = { version = "0.40.4" , markers = "python_version >= '3.10'" }
+traceloop-sdk = { version = "0.42.0" , markers = "python_version >= '3.10'" }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"
