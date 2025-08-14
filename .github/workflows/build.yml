@@ -28,7 +28,7 @@ jobs:
         run: |
           make check-codestyle
       - name: Creadentials search in source code - TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3.69.0
+        uses: trufflesecurity/trufflehog@v3.90.5
       - name: Run tests
         run: |
           make test
