@@ -207,6 +207,8 @@ class Client:
         input: str,
         output: str,
         evaluation_id: str,
+        messages: Optional[List[LLMMessage]] = None,
+        available_tools: Optional[List[LLMToolDefinition]] = None,
     ) -> EvaluationResponse:
         url = f"{self._base_url}/api/evaluation/invoke/"
 
@@ -214,6 +216,8 @@ class Client:
             "evaluation_id": evaluation_id,
             "input": input,
             "output": output,
+            "messages": messages,
+            "available_tools": available_tools,
         }
         headers = {
             "X-Qualifire-API-Key": self._api_key,
