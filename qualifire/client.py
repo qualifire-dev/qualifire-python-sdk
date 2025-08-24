@@ -216,8 +216,10 @@ class Client:
             "evaluation_id": evaluation_id,
             "input": input,
             "output": output,
-            "messages": messages,
-            "available_tools": available_tools,
+            "messages": [asdict(message) for message in messages] if messages else None,
+            "available_tools": (
+                [asdict(tool) for tool in available_tools] if available_tools else None
+            ),
         }
         headers = {
             "X-Qualifire-API-Key": self._api_key,
