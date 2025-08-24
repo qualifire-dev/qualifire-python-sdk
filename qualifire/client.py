@@ -7,6 +7,7 @@ from dataclasses import asdict
 import requests
 
 from .types import (
+    EvaluationInvokeRequest,
     EvaluationRequest,
     EvaluationResponse,
     LLMMessage,
@@ -204,29 +205,29 @@ class Client:
 
     def invoke_evaluation(
         self,
-        input: str,
-        output: str,
         evaluation_id: str,
+        input: Optional[str] = None,
+        output: Optional[str] = None,
         messages: Optional[List[LLMMessage]] = None,
         available_tools: Optional[List[LLMToolDefinition]] = None,
     ) -> EvaluationResponse:
         url = f"{self._base_url}/api/evaluation/invoke/"
 
-        payload = {
-            "evaluation_id": evaluation_id,
-            "input": input,
-            "output": output,
-            "messages": [asdict(message) for message in messages] if messages else None,
-            "available_tools": (
-                [asdict(tool) for tool in available_tools] if available_tools else None
-            ),
-        }
+        request = EvaluationInvokeRequest(
+            evaluation_id=evaluation_id,
+            input=input,
+            output=output,
+            messages=messages,
+            available_tools=available_tools,
+        )
+
+        body = json.dumps(asdict(request))
         headers = {
             "X-Qualifire-API-Key": self._api_key,
             "Content-Type": "application/json",
         }
 
-        response = requests.request("POST", url, json=payload, headers=headers)
+        response = requests.request("POST", url, data=body, headers=headers)
         if response.status_code != 200:
             if self._debug:
                 response.raise_for_status()

@@ -72,6 +72,24 @@ class EvaluationRequest:
 
 
 @dataclass
+class EvaluationInvokeRequest:
+    evaluation_id: str
+    input: Optional[str] = None
+    output: Optional[str] = None
+    messages: Optional[List[LLMMessage]] = None
+    available_tools: Optional[List[LLMToolDefinition]] = None
+
+    def __post_init__(self):
+        self._validate_messages_input_output()
+
+    def _validate_messages_input_output(self):
+        if not self.messages and not self.input and not self.output:
+            raise ValueError(
+                "At least one of messages, input, or output must be set",
+            )
+
+
+@dataclass
 class EvaluationResult:
     claim: str
     confidence_score: int
