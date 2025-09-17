@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import json
 import logging
@@ -210,16 +210,25 @@ class Client:
         evaluation_id: str,
         input: Optional[str] = None,
         output: Optional[str] = None,
-        messages: Optional[List[LLMMessage]] = None,
+        messages: Union[
+            Optional[List[LLMMessage]],
+            Optional[List[Dict[str, Any]]],
+        ] = None,
         available_tools: Optional[List[LLMToolDefinition]] = None,
     ) -> EvaluationResponse:
         url = f"{self._base_url}/api/evaluation/invoke/"
+
+        if messages is not None:
+            if isinstance(messages, list) and all(
+                isinstance(message, dict) for message in messages
+            ):
+                messages = [LLMMessage(**message) for message in messages]  # type: ignore # noqa E501
 
         request = EvaluationInvokeRequest(
             evaluation_id=evaluation_id,
             input=input,
             output=output,
-            messages=messages,
+            messages=messages,  # type: ignore
             available_tools=available_tools,
         )
 
