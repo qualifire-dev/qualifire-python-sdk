@@ -26,11 +26,13 @@ class Client:
         base_url: Optional[str] = None,
         version: Optional[str] = None,
         debug: bool = False,
+        verify: bool = True,
     ) -> None:
         self._base_url = base_url or get_base_url()
         self._api_key = api_key or get_api_key()
         self._version = version
         self._debug = debug
+        self._verify = verify
 
     def evaluate(
         self,
@@ -195,7 +197,7 @@ class Client:
             "X-Qualifire-API-Key": self._api_key,
         }
 
-        response = requests.post(url, headers=headers, data=body)
+        response = requests.post(url, headers=headers, data=body, verify=self._verify)
 
         if response.status_code != 200:
             raise Exception(f"Qualifire API error: {response.text}")
@@ -227,7 +229,13 @@ class Client:
             "Content-Type": "application/json",
         }
 
-        response = requests.request("POST", url, data=body, headers=headers)
+        response = requests.request(
+            "POST",
+            url,
+            data=body,
+            headers=headers,
+            verify=self._verify,
+        )
         if response.status_code != 200:
             if self._debug:
                 response.raise_for_status()
