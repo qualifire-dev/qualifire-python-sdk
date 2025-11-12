@@ -98,6 +98,7 @@ class EvaluationResult:
     quote: str
     reason: str
     score: int
+    flagged: bool
 
 
 @dataclass
