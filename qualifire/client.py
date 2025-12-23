@@ -12,6 +12,8 @@ from .types import (
     EvaluationResponse,
     LLMMessage,
     LLMToolDefinition,
+    ModelMode,
+    PolicyTarget,
     SyntaxCheckArgs,
 )
 from .utils import get_api_key, get_base_url
@@ -41,17 +43,26 @@ class Client:
         messages: Optional[List[LLMMessage]] = None,
         available_tools: Optional[List[LLMToolDefinition]] = None,
         assertions: Optional[List[str]] = None,
-        dangerous_content_check: bool = False,
+        dangerous_content_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         grounding_check: bool = False,
         hallucinations_check: bool = False,
-        harassment_check: bool = False,
-        hate_speech_check: bool = False,
+        harassment_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
+        hate_speech_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         instructions_following_check: bool = False,
         pii_check: bool = False,
         prompt_injections: bool = False,
-        sexual_content_check: bool = False,
+        sexual_content_check: bool = False,  # Deprecated: use content_moderation_check
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
         tool_selection_quality_check: bool = False,
+        content_moderation_check: bool = False,
+        tsq_mode: ModelMode = ModelMode.BALANCED,
+        consistency_mode: ModelMode = ModelMode.BALANCED,
+        assertions_mode: ModelMode = ModelMode.BALANCED,
+        grounding_mode: ModelMode = ModelMode.BALANCED,
+        hallucinations_mode: ModelMode = ModelMode.BALANCED,
+        grounding_multi_turn_mode: bool = False,
+        policy_multi_turn_mode: bool = False,
+        policy_target: PolicyTarget = PolicyTarget.BOTH,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
@@ -63,20 +74,34 @@ class Client:
         :param available_tools: List of available tools.
             Must be set if tool_selection_quality_check is True.
         :param assertions: A list of custom assertions to check against the output.
-        :param dangerous_content_check: Check for dangerous content generation.
+        :param dangerous_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for dangerous content generation.
         :param grounding_check: Check if the output is grounded in the provided
                                 input/context.
         :param hallucinations_check: Check for factual inaccuracies or hallucinations.
-        :param harassment_check: Check for harassing content.
-        :param hate_speech_check: Check for hate speech.
+        :param harassment_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for harassing content.
+        :param hate_speech_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for hate speech.
         :param instructions_following_check: Check if the output follows instructions
                                              in the input/messages.
         :param pii_check: Check for personally identifiable information.
         :param prompt_injections: Check for attempts at prompt injection.
-        :param sexual_content_check: Check for sexually explicit content.
+        :param sexual_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for sexually explicit content.
         :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
         :param tool_selection_quality_check: Check for tool selection quality.
             Only works when `available_tools` and `messages` are provided.
+        :param content_moderation_check: Check for content moderation (dangerous content,
+            harassment, hate speech, and sexual content).
+        :param tsq_mode: Model mode for tool selection quality check (speed/balanced/quality).
+        :param consistency_mode: Model mode for consistency check (speed/balanced/quality).
+        :param assertions_mode: Model mode for assertions check (speed/balanced/quality).
+        :param grounding_mode: Model mode for grounding check (speed/balanced/quality).
+        :param hallucinations_mode: Model mode for hallucinations check (speed/balanced/quality).
+        :param grounding_multi_turn_mode: Enable multi-turn mode for grounding check.
+        :param policy_multi_turn_mode: Enable multi-turn mode for policy check.
+        :param policy_target: Target for policy checks (input/output/both).
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -188,6 +213,15 @@ class Client:
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
             tool_selection_quality_check=tool_selection_quality_check,
+            content_moderation_check=content_moderation_check,
+            tsq_mode=tsq_mode,
+            consistency_mode=consistency_mode,
+            assertions_mode=assertions_mode,
+            grounding_mode=grounding_mode,
+            hallucinations_mode=hallucinations_mode,
+            grounding_multi_turn_mode=grounding_multi_turn_mode,
+            policy_multi_turn_mode=policy_multi_turn_mode,
+            policy_target=policy_target,
         )
 
         # Filter out None values before dumping to JSON
@@ -200,7 +234,10 @@ class Client:
         response = requests.post(url, headers=headers, data=body, verify=self._verify)
 
         if response.status_code != 200:
-            raise Exception(f"Qualifire API error: {response.text}")
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
@@ -248,7 +285,10 @@ class Client:
         if response.status_code != 200:
             if self._debug:
                 response.raise_for_status()
-            raise Exception(f"Qualifire API error: {response.text}")
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
