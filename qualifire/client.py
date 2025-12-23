@@ -208,9 +208,10 @@ class Client:
         response = requests.post(url, headers=headers, data=body, verify=self._verify)
 
         if response.status_code != 200:
-            raise Exception(
-                f"Qualifire API error: {response.status_code} - {response.text}"
-            )
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
@@ -258,7 +259,10 @@ class Client:
         if response.status_code != 200:
             if self._debug:
                 response.raise_for_status()
-            raise Exception(f"Qualifire API error: {response.text}")
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
