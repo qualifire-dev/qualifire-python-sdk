@@ -1,6 +1,19 @@
 from typing import Any, Dict, List, Optional
 
 from dataclasses import dataclass, field
+from enum import Enum
+
+
+class ModelMode(str, Enum):
+    SPEED = "speed"
+    BALANCED = "balanced"
+    QUALITY = "quality"
+
+
+class PolicyTarget(str, Enum):
+    INPUT = "input"
+    OUTPUT = "output"
+    BOTH = "both"
 
 
 @dataclass
@@ -48,6 +61,14 @@ class EvaluationRequest:
     assertions: Optional[List[str]] = field(default_factory=list)
     tool_selection_quality_check: bool = False
     content_moderation_check: bool = False
+    tsq_mode: ModelMode = ModelMode.BALANCED
+    consistency_mode: ModelMode = ModelMode.BALANCED
+    assertions_mode: ModelMode = ModelMode.BALANCED
+    grounding_mode: ModelMode = ModelMode.BALANCED
+    hallucinations_mode: ModelMode = ModelMode.BALANCED
+    grounding_multi_turn_mode: bool = False
+    policy_multi_turn_mode: bool = False
+    policy_target: PolicyTarget = PolicyTarget.BOTH
 
     def __post_init__(self):
         self._validate_messages_input_output()

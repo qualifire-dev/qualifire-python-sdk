@@ -12,6 +12,8 @@ from .types import (
     EvaluationResponse,
     LLMMessage,
     LLMToolDefinition,
+    ModelMode,
+    PolicyTarget,
     SyntaxCheckArgs,
 )
 from .utils import get_api_key, get_base_url
@@ -53,6 +55,14 @@ class Client:
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
         tool_selection_quality_check: bool = False,
         content_moderation_check: bool = False,
+        tsq_mode: ModelMode = ModelMode.BALANCED,
+        consistency_mode: ModelMode = ModelMode.BALANCED,
+        assertions_mode: ModelMode = ModelMode.BALANCED,
+        grounding_mode: ModelMode = ModelMode.BALANCED,
+        hallucinations_mode: ModelMode = ModelMode.BALANCED,
+        grounding_multi_turn_mode: bool = False,
+        policy_multi_turn_mode: bool = False,
+        policy_target: PolicyTarget = PolicyTarget.BOTH,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
@@ -84,6 +94,14 @@ class Client:
             Only works when `available_tools` and `messages` are provided.
         :param content_moderation_check: Check for content moderation (dangerous content,
             harassment, hate speech, and sexual content).
+        :param tsq_mode: Model mode for tool selection quality check (speed/balanced/quality).
+        :param consistency_mode: Model mode for consistency check (speed/balanced/quality).
+        :param assertions_mode: Model mode for assertions check (speed/balanced/quality).
+        :param grounding_mode: Model mode for grounding check (speed/balanced/quality).
+        :param hallucinations_mode: Model mode for hallucinations check (speed/balanced/quality).
+        :param grounding_multi_turn_mode: Enable multi-turn mode for grounding check.
+        :param policy_multi_turn_mode: Enable multi-turn mode for policy check.
+        :param policy_target: Target for policy checks (input/output/both).
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -196,6 +214,14 @@ class Client:
             syntax_checks=syntax_checks,
             tool_selection_quality_check=tool_selection_quality_check,
             content_moderation_check=content_moderation_check,
+            tsq_mode=tsq_mode,
+            consistency_mode=consistency_mode,
+            assertions_mode=assertions_mode,
+            grounding_mode=grounding_mode,
+            hallucinations_mode=hallucinations_mode,
+            grounding_multi_turn_mode=grounding_multi_turn_mode,
+            policy_multi_turn_mode=policy_multi_turn_mode,
+            policy_target=policy_target,
         )
 
         # Filter out None values before dumping to JSON
