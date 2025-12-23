@@ -45,8 +45,8 @@ class Client:
         assertions: Optional[List[str]] = None,
         dangerous_content_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         grounding_check: bool = False,
-        hallucinations_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
-        harassment_check: bool = False,
+        hallucinations_check: bool = False,
+        harassment_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         hate_speech_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         instructions_following_check: bool = False,
         pii_check: bool = False,
