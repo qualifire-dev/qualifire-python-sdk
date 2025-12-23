@@ -41,17 +41,18 @@ class Client:
         messages: Optional[List[LLMMessage]] = None,
         available_tools: Optional[List[LLMToolDefinition]] = None,
         assertions: Optional[List[str]] = None,
-        dangerous_content_check: bool = False,
+        dangerous_content_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         grounding_check: bool = False,
-        hallucinations_check: bool = False,
+        hallucinations_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         harassment_check: bool = False,
-        hate_speech_check: bool = False,
+        hate_speech_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         instructions_following_check: bool = False,
         pii_check: bool = False,
         prompt_injections: bool = False,
-        sexual_content_check: bool = False,
+        sexual_content_check: bool = False,  # Deprecated: use content_moderation_check
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
         tool_selection_quality_check: bool = False,
+        content_moderation_check: bool = False,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
@@ -63,20 +64,26 @@ class Client:
         :param available_tools: List of available tools.
             Must be set if tool_selection_quality_check is True.
         :param assertions: A list of custom assertions to check against the output.
-        :param dangerous_content_check: Check for dangerous content generation.
+        :param dangerous_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for dangerous content generation.
         :param grounding_check: Check if the output is grounded in the provided
                                 input/context.
         :param hallucinations_check: Check for factual inaccuracies or hallucinations.
-        :param harassment_check: Check for harassing content.
-        :param hate_speech_check: Check for hate speech.
+        :param harassment_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for harassing content.
+        :param hate_speech_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for hate speech.
         :param instructions_following_check: Check if the output follows instructions
                                              in the input/messages.
         :param pii_check: Check for personally identifiable information.
         :param prompt_injections: Check for attempts at prompt injection.
-        :param sexual_content_check: Check for sexually explicit content.
+        :param sexual_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
+            Check for sexually explicit content.
         :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
         :param tool_selection_quality_check: Check for tool selection quality.
             Only works when `available_tools` and `messages` are provided.
+        :param content_moderation_check: Check for content moderation (dangerous content,
+            harassment, hate speech, and sexual content).
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -188,6 +195,7 @@ class Client:
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
             tool_selection_quality_check=tool_selection_quality_check,
+            content_moderation_check=content_moderation_check,
         )
 
         # Filter out None values before dumping to JSON
@@ -200,7 +208,9 @@ class Client:
         response = requests.post(url, headers=headers, data=body, verify=self._verify)
 
         if response.status_code != 200:
-            raise Exception(f"Qualifire API error: {response.text}")
+            raise Exception(
+                f"Qualifire API error: {response.status_code} - {response.text}"
+            )
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
