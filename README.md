@@ -1,393 +1,278 @@
-# qualifire
+# Qualifire Python SDK
 
 <div align="center">
 
 [![build](https://github.com/qualifire-dev/qualifire-python-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/qualifire-dev/qualifire-python-sdk/actions/workflows/build.yml)
 [![Python Version](https://img.shields.io/pypi/pyversions/qualifire.svg)](https://pypi.org/project/qualifire/)
-[![Dependencies Status](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)](https://github.com/qualifire-dev/qualifire/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Aapp%2Fdependabot)
-
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Security: bandit](https://img.shields.io/badge/security-bandit-green.svg)](https://github.com/PyCQA/bandit)
-[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/qualifire-dev/qualifire/blob/main/.pre-commit-config.yaml)
-[![Semantic Versions](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--versions-e10079.svg)](https://github.com/qualifire-dev/qualifire/releases)
 [![License](https://img.shields.io/github/license/qualifire-dev/qualifire)](https://github.com/qualifire-dev/qualifire/blob/main/LICENSE)
 ![Coverage Report](assets/images/coverage.svg)
 
-Qualifire Python SDK
+**Evaluate your LLM outputs for quality, safety, and reliability**
 
 </div>
 
-## Very first steps
+---
 
-### Initialize your code
+## Overview
 
-1. Initialize `git` inside your repo:
-
-```bash
-cd qualifire && git init
-```
-
-2. If you don't have `Poetry` installed run:
-
-```bash
-make poetry-download
-```
-
-3. Initialize poetry and install `pre-commit` hooks:
-
-```bash
-make install
-make pre-commit-install
-```
-
-4. Run the codestyle:
-
-```bash
-make codestyle
-```
-
-5. Upload initial code to GitHub:
-
-```bash
-git add .
-git commit -m ":tada: Initial commit"
-git branch -M main
-git remote add origin https://github.com/qualifire-dev/qualifire.git
-git push -u origin main
-```
-
-### Set up bots
-
-- Set up [Dependabot](https://docs.github.com/en/github/administering-a-repository/enabling-and-disabling-version-updates#enabling-github-dependabot-version-updates) to ensure you have the latest dependencies.
-- Set up [Stale bot](https://github.com/apps/stale) for automatic issue closing.
-
-### Poetry
-
-Want to know more about Poetry? Check [its documentation](https://python-poetry.org/docs/).
-
-<details>
-<summary>Details about Poetry</summary>
-<p>
-
-Poetry's [commands](https://python-poetry.org/docs/cli/#commands) are very intuitive and easy to learn, like:
-
-- `poetry add numpy@latest`
-- `poetry run pytest`
-- `poetry publish --build`
-
-etc
-
-</p>
-</details>
-
-### Building and releasing your package
-
-Building a new version of the application contains steps:
-
-- Bump the version of your package `poetry version <version>`. You can pass the new version explicitly, or a rule such as `major`, `minor`, or `patch`. For more details, refer to the [Semantic Versions](https://semver.org/) standard.
-- Make a commit to `GitHub`.
-- Create a `GitHub release`.
-- And... publish 🙂 `poetry publish --build`
-
-## 🎯 What's next
-
-Well, that's up to you 💪🏻. I can only recommend the packages and articles that helped me.
-
-- [`Typer`](https://github.com/tiangolo/typer) is great for creating CLI applications.
-- [`Rich`](https://github.com/willmcgugan/rich) makes it easy to add beautiful formatting in the terminal.
-- [`Pydantic`](https://github.com/samuelcolvin/pydantic/) – data validation and settings management using Python type hinting.
-- [`Loguru`](https://github.com/Delgan/loguru) makes logging (stupidly) simple.
-- [`tqdm`](https://github.com/tqdm/tqdm) – fast, extensible progress bar for Python and CLI.
-- [`IceCream`](https://github.com/gruns/icecream) is a little library for sweet and creamy debugging.
-- [`orjson`](https://github.com/ijl/orjson) – ultra fast JSON parsing library.
-- [`Returns`](https://github.com/dry-python/returns) makes you function's output meaningful, typed, and safe!
-- [`Hydra`](https://github.com/facebookresearch/hydra) is a framework for elegantly configuring complex applications.
-- [`FastAPI`](https://github.com/tiangolo/fastapi) is a type-driven asynchronous web framework.
-
-Articles:
-
-- [Open Source Guides](https://opensource.guide/).
-- [A handy guide to financial support for open source](https://github.com/nayafia/lemonade-stand)
-- [GitHub Actions Documentation](https://help.github.com/en/actions).
-- Maybe you would like to add [gitmoji](https://gitmoji.carloscuesta.me/) to commit names. This is really funny. 😄
-
-## 🚀 Features
-
-### Development features
-
-- Supports for `Python 3.8` and higher.
-- [`Poetry`](https://python-poetry.org/) as the dependencies manager. See configuration in [`pyproject.toml`](https://github.com/qualifire-dev/qualifire/blob/main/pyproject.toml) and [`setup.cfg`](https://github.com/qualifire-dev/qualifire/blob/main/setup.cfg).
-- Automatic codestyle with [`black`](https://github.com/psf/black), [`isort`](https://github.com/timothycrosley/isort) and [`pyupgrade`](https://github.com/asottile/pyupgrade).
-- Ready-to-use [`pre-commit`](https://pre-commit.com/) hooks with code-formatting.
-- Type checks with [`mypy`](https://mypy.readthedocs.io); docstring checks with [`darglint`](https://github.com/terrencepreilly/darglint); security checks with [`safety`](https://github.com/pyupio/safety) and [`bandit`](https://github.com/PyCQA/bandit)
-- Testing with [`pytest`](https://docs.pytest.org/en/latest/).
-- Ready-to-use [`.editorconfig`](https://github.com/qualifire-dev/qualifire/blob/main/.editorconfig), [`.dockerignore`](https://github.com/qualifire-dev/qualifire/blob/main/.dockerignore), and [`.gitignore`](https://github.com/qualifire-dev/qualifire/blob/main/.gitignore). You don't have to worry about those things.
-
-### Deployment features
-
-- `GitHub` integration: issue and pr templates.
-- `Github Actions` with predefined [build workflow](https://github.com/qualifire-dev/qualifire/blob/main/.github/workflows/build.yml) as the default CI/CD.
-- Everything is already set up for security checks, codestyle checks, code formatting, testing, linting, docker builds, etc with [`Makefile`](https://github.com/qualifire-dev/qualifire/blob/main/Makefile#L89). More details in [makefile-usage](#makefile-usage).
-- [Dockerfile](https://github.com/qualifire-dev/qualifire/blob/main/docker/Dockerfile) for your package.
-- Always up-to-date dependencies with [`@dependabot`](https://dependabot.com/). You will only [enable it](https://docs.github.com/en/github/administering-a-repository/enabling-and-disabling-version-updates#enabling-github-dependabot-version-updates).
-- Automatic drafts of new releases with [`Release Drafter`](https://github.com/marketplace/actions/release-drafter). You may see the list of labels in [`release-drafter.yml`](https://github.com/qualifire-dev/qualifire/blob/main/.github/release-drafter.yml). Works perfectly with [Semantic Versions](https://semver.org/) specification.
-
-### Open source community features
-
-- Ready-to-use [Pull Requests templates](https://github.com/qualifire-dev/qualifire/blob/main/.github/PULL_REQUEST_TEMPLATE.md) and several [Issue templates](https://github.com/qualifire-dev/qualifire/tree/main/.github/ISSUE_TEMPLATE).
-- Files such as: `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md` are generated automatically.
-- [`Stale bot`](https://github.com/apps/stale) that closes abandoned issues after a period of inactivity. (You will only [need to setup free plan](https://github.com/marketplace/stale)). Configuration is [here](https://github.com/qualifire-dev/qualifire/blob/main/.github/.stale.yml).
-- [Semantic Versions](https://semver.org/) specification with [`Release Drafter`](https://github.com/marketplace/actions/release-drafter).
+The Qualifire Python SDK provides a simple interface to evaluate LLM outputs against a comprehensive suite of quality and safety checks. Detect hallucinations, ensure grounding, identify PII, block harmful content, and validate that your AI follows instructions—all through a single API.
 
 ## Installation
 
 ```bash
-pip install -U qualifire
+pip install qualifire
 ```
 
-or install with `Poetry`
+Or with Poetry:
 
 ```bash
 poetry add qualifire
 ```
 
-### Makefile usage
+## Quick Start
 
-[`Makefile`](https://github.com/qualifire-dev/qualifire/blob/main/Makefile) contains a lot of functions for faster development.
+```python
+from qualifire.client import Client
 
-<details>
-<summary>1. Download and remove Poetry</summary>
-<p>
+# Initialize the client
+client = Client(api_key="your_api_key")
 
-To download and install Poetry run:
+# Evaluate an LLM response
+result = client.evaluate(
+    input="What is the capital of France?",
+    output="The capital of France is Paris.",
+    hallucinations_check=True,
+    grounding_check=True,
+)
 
-```bash
-make poetry-download
+print(f"Score: {result.score}")
+print(f"Status: {result.status}")
 ```
 
-To uninstall
+## Available Checks
 
-```bash
-make poetry-remove
+| Check                          | Description                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| `hallucinations_check`         | Detect factual inaccuracies or hallucinations                                          |
+| `grounding_check`              | Verify output is grounded in the provided context                                      |
+| `pii_check`                    | Detect personally identifiable information                                             |
+| `prompt_injections`            | Identify prompt injection attempts                                                     |
+| `content_moderation_check`     | Check for harmful content (harassment, hate speech, dangerous content, sexual content) |
+| `tool_selection_quality_check` | Evaluate quality of tool/function calls                                                |
+| `syntax_checks`                | Validate output syntax (JSON, SQL, etc.)                                               |
+| `assertions`                   | Custom assertions to validate against the output                                       |
+
+## Usage Examples
+
+### Basic Evaluation
+
+```python
+from qualifire.client import Client
+
+client = Client(api_key="your_api_key")
+
+result = client.evaluate(
+    input="Summarize this document about climate change.",
+    output="Climate change is primarily caused by human activities...",
+    hallucinations_check=True,
+    grounding_check=True,
+)
 ```
 
-</p>
-</details>
+### Messages-based Evaluation
 
-<details>
-<summary>2. Install all dependencies and pre-commit hooks</summary>
-<p>
+```python
+from qualifire.client import Client
+from qualifire.types import LLMMessage
 
-Install requirements:
+client = Client(api_key="your_api_key")
 
-```bash
-make install
+result = client.evaluate(
+    messages=[
+        LLMMessage(role="system", content="You are a helpful assistant."),
+        LLMMessage(role="user", content="What is the capital of France?"),
+        LLMMessage(role="assistant", content="The capital of France is Paris."),
+    ],
+    hallucinations_check=True,
+    grounding_check=True,
+)
 ```
 
-Pre-commit hooks coulb be installed after `git init` via
+### Content Moderation
 
-```bash
-make pre-commit-install
+```python
+result = client.evaluate(
+    input="Write a story about friendship.",
+    output="Once upon a time...",
+    content_moderation_check=True,
+    pii_check=True,
+)
 ```
 
-</p>
-</details>
+### Syntax Validation
 
-<details>
-<summary>3. Codestyle</summary>
-<p>
+```python
+from qualifire.types import SyntaxCheckArgs
 
-Automatic formatting uses `pyupgrade`, `isort` and `black`.
-
-```bash
-make codestyle
-
-# or use synonym
-make formatting
+result = client.evaluate(
+    input="Return the user data as JSON.",
+    output='{"name": "John", "age": 30}',
+    syntax_checks={
+        "json": SyntaxCheckArgs(args="strict")
+    },
+)
 ```
 
-Codestyle checks only, without rewriting files:
+### Multi-Turn Conversations
 
-```bash
-make check-codestyle
+```python
+from qualifire.types import LLMMessage
+
+result = client.evaluate(
+    messages=[
+        LLMMessage(role="user", content="What is 2 + 2?"),
+        LLMMessage(role="assistant", content="2 + 2 equals 4."),
+        LLMMessage(role="user", content="And if you add 3 more?"),
+        LLMMessage(role="assistant", content="4 + 3 equals 7."),
+    ],
+    hallucinations_check=True,
+    grounding_multi_turn_mode=True,
+)
 ```
 
-> Note: `check-codestyle` uses `isort`, `black` and `darglint` library
+### Tool Selection Quality
 
-Update all dev libraries to the latest version using one comand
+```python
+from qualifire.types import LLMMessage, LLMToolCall, LLMToolDefinition
 
-```bash
-make update-dev-deps
+result = client.evaluate(
+    messages=[
+        LLMMessage(
+            role="user",
+            content="What's the weather in New York tomorrow?",
+        ),
+        LLMMessage(
+            role="assistant",
+            content="Let me check that for you.",
+            tool_calls=[
+                LLMToolCall(
+                    id="call_123",
+                    name="get_weather",
+                    arguments={"location": "New York", "date": "tomorrow"},
+                )
+            ],
+        ),
+    ],
+    available_tools=[
+        LLMToolDefinition(
+            name="get_weather",
+            description="Get weather forecast for a location",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "location": {"type": "string"},
+                    "date": {"type": "string"},
+                },
+                "required": ["location"],
+            },
+        ),
+    ],
+    tool_selection_quality_check=True,
+)
 ```
 
-<details>
-<summary>4. Code security</summary>
-<p>
+### Custom Assertions
 
-```bash
-make check-safety
+```python
+result = client.evaluate(
+    input="List three fruits.",
+    output="1. Apple\n2. Banana\n3. Orange",
+    assertions=[
+        "The output must contain exactly three items",
+        "Each item must be a fruit",
+        "Items must be numbered",
+    ],
+)
 ```
 
-This command launches `Poetry` integrity checks as well as identifies security issues with `Safety` and `Bandit`.
+### Invoke Pre-configured Evaluations
 
-```bash
-make check-safety
+```python
+# Run an evaluation configured in the Qualifire dashboard
+result = client.invoke_evaluation(
+    evaluation_id="eval_abc123",
+    input="User query here",
+    output="LLM response here",
+)
 ```
 
-</p>
-</details>
+## Configuration
 
-</p>
-</details>
+### Environment Variables
 
-<details>
-<summary>5. Type checks</summary>
-<p>
+| Variable             | Description                    |
+| -------------------- | ------------------------------ |
+| `QUALIFIRE_API_KEY`  | Your Qualifire API key         |
+| `QUALIFIRE_BASE_URL` | Custom API base URL (optional) |
 
-Run `mypy` static type checker
+### Client Options
 
-```bash
-make mypy
+```python
+client = Client(
+    api_key="your_api_key",      # API key (or use env var)
+    base_url="https://...",       # Custom base URL
+    debug=True,                   # Enable debug mode
+    verify=True,                  # SSL verification
+)
 ```
 
-</p>
-</details>
+## Model Modes
 
-<details>
-<summary>6. Tests with coverage badges</summary>
-<p>
+Control the speed/quality trade-off for different checks:
 
-Run `pytest`
+```python
+from qualifire.types import ModelMode
 
-```bash
-make test
+result = client.evaluate(
+    input="...",
+    output="...",
+    hallucinations_check=True,
+    hallucinations_mode=ModelMode.QUALITY,  # SPEED | BALANCED | QUALITY
+    grounding_check=True,
+    grounding_mode=ModelMode.SPEED,
+)
 ```
 
-</p>
-</details>
+## Response Format
 
-<details>
-<summary>7. All linters</summary>
-<p>
+```python
+result = client.evaluate(...)
 
-Of course there is a command to ~~rule~~ run all linters in one:
+# Overall score (0-100)
+print(result.score)
 
-```bash
-make lint
+# Status of the evaluation
+print(result.status)
+
+# Detailed results per check
+for item in result.evaluationResults:
+    print(f"Check type: {item.type}")
+    for r in item.results:
+        print(f"  - {r.name}: {r.label} (score: {r.score})")
+        print(f"    Reason: {r.reason}")
+        print(f"    Flagged: {r.flagged}")
 ```
 
-the same as:
+## Requirements
 
-```bash
-make test && make check-codestyle && make mypy && make check-safety
-```
+- Python 3.8+
 
-</p>
-</details>
+## License
 
-<details>
-<summary>8. Docker</summary>
-<p>
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-```bash
-make docker-build
-```
+## Links
 
-which is equivalent to:
-
-```bash
-make docker-build VERSION=latest
-```
-
-Remove docker image with
-
-```bash
-make docker-remove
-```
-
-More information [about docker](https://github.com/qualifire-dev/qualifire/tree/main/docker).
-
-</p>
-</details>
-
-<details>
-<summary>9. Cleanup</summary>
-<p>
-Delete pycache files
-
-```bash
-make pycache-remove
-```
-
-Remove package build
-
-```bash
-make build-remove
-```
-
-Delete .DS_STORE files
-
-```bash
-make dsstore-remove
-```
-
-Remove .mypycache
-
-```bash
-make mypycache-remove
-```
-
-Or to remove all above run:
-
-```bash
-make cleanup
-```
-
-</p>
-</details>
-
-## 📈 Releases
-
-You can see the list of available releases on the [GitHub Releases](https://github.com/qualifire-dev/qualifire/releases) page.
-
-We follow [Semantic Versions](https://semver.org/) specification.
-
-We use [`Release Drafter`](https://github.com/marketplace/actions/release-drafter). As pull requests are merged, a draft release is kept up-to-date listing the changes, ready to publish when you’re ready. With the categories option, you can categorize pull requests in release notes using labels.
-
-### List of labels and corresponding titles
-
-|               **Label**               |  **Title in Releases**  |
-| :-----------------------------------: | :---------------------: |
-|       `enhancement`, `feature`        |       🚀 Features       |
-| `bug`, `refactoring`, `bugfix`, `fix` | 🔧 Fixes & Refactoring  |
-|       `build`, `ci`, `testing`        | 📦 Build System & CI/CD |
-|              `breaking`               |   💥 Breaking Changes   |
-|            `documentation`            |    📝 Documentation     |
-|            `dependencies`             | ⬆️ Dependencies updates |
-
-You can update it in [`release-drafter.yml`](https://github.com/qualifire-dev/qualifire/blob/main/.github/release-drafter.yml).
-
-GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dependabot creates the `dependencies` label. Create the remaining labels on the Issues tab of your GitHub repository, when you need them.
-
-## 🛡 License
-
-[![License](https://img.shields.io/github/license/qualifire-dev/qualifire)](https://github.com/qualifire-dev/qualifire/blob/main/LICENSE)
-
-This project is licensed under the terms of the `MIT` license. See [LICENSE](https://github.com/qualifire-dev/qualifire/blob/main/LICENSE) for more details.
-
-## 📃 Citation
-
-```bibtex
-@misc{qualifire,
-  author = {qualifire-dev},
-  title = {Qualifire PYthon SDK},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/qualifire-dev/qualifire}}
-}
-```
-
-## Credits [![🚀 Your next Python package needs a bleeding-edge project structure.](https://img.shields.io/badge/python--package--template-%F0%9F%9A%80-brightgreen)](https://github.com/TezRomacH/python-package-template)
-
-This project was generated with [`python-package-template`](https://github.com/TezRomacH/python-package-template)
+- [Documentation](https://docs.qualifire.ai)
+- [Qualifire Dashboard](https://app.qualifire.ai)
+- [GitHub Repository](https://github.com/qualifire-dev/qualifire-python-sdk)

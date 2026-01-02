@@ -56,7 +56,6 @@ class EvaluationRequest:
     prompt_injections: bool = False
     sexual_content_check: bool = False  # Deprecated: use content_moderation_check
     grounding_check: bool = False
-    instructions_following_check: bool = False
     syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None
     assertions: Optional[List[str]] = field(default_factory=list)
     tool_selection_quality_check: bool = False

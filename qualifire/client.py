@@ -48,7 +48,6 @@ class Client:
         hallucinations_check: bool = False,
         harassment_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
         hate_speech_check: bool = False,  # Deprecated: use content_moderation_check  # noqa: E501
-        instructions_following_check: bool = False,
         pii_check: bool = False,
         prompt_injections: bool = False,
         sexual_content_check: bool = False,  # Deprecated: use content_moderation_check
@@ -83,8 +82,6 @@ class Client:
             Check for harassing content.
         :param hate_speech_check: .. deprecated:: Use :param:`content_moderation_check` instead.
             Check for hate speech.
-        :param instructions_following_check: Check if the output follows instructions
-                                             in the input/messages.
         :param pii_check: Check for personally identifiable information.
         :param prompt_injections: Check for attempts at prompt injection.
         :param sexual_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
@@ -123,7 +120,6 @@ class Client:
             hallucinations_check=True,
             harassment_check=True,
             hate_speech_check=True,
-            instructions_following_check=True,
             messages=[
                 LLMMessage(
                     role="user",
@@ -207,7 +203,6 @@ class Client:
             hallucinations_check=hallucinations_check,
             harassment_check=harassment_check,
             hate_speech_check=hate_speech_check,
-            instructions_following_check=instructions_following_check,
             pii_check=pii_check,
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
