@@ -98,7 +98,7 @@ class Client:
             harassment, hate speech, and sexual content).
         :param tsq_mode: .. deprecated:: Use :param:`tuq_mode` instead.
             Model mode for tool selection quality check (speed/balanced/quality).
-        :param tuq_mode: Model mode for tool usq quality check (speed/balanced/quality).
+        :param tuq_mode: Model mode for tool use quality check (speed/balanced/quality).
         :param consistency_mode: Model mode for consistency check (speed/balanced/quality).
         :param assertions_mode: Model mode for assertions check (speed/balanced/quality).
         :param grounding_mode: Model mode for grounding check (speed/balanced/quality).
