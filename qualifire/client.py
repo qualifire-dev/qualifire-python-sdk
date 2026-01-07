@@ -92,7 +92,7 @@ class Client:
         :param tool_selection_quality_check: .. deprecated:: Use :param:`tool_use_quality_check` instead.
             Check for tool selection quality.
             Only works when `available_tools` and `messages` are provided.
-        :param tool_use_quality_check: Check for tool selection quality
+        :param tool_use_quality_check: Check for tool use quality
             Only works when `available_tools` and `messages` are provided.
         :param content_moderation_check: Check for content moderation (dangerous content,
             harassment, hate speech, and sexual content).
