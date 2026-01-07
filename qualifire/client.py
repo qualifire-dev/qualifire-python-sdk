@@ -214,7 +214,8 @@ class Client:
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
-            tool_use_quality_check=tool_use_quality_check or tool_selection_quality_check,
+            tool_use_quality_check=tool_use_quality_check
+            or tool_selection_quality_check,
             content_moderation_check=content_moderation_check,
             tuq_mode=tuq_mode if tuq_mode else tsq_mode,
             consistency_mode=consistency_mode,
