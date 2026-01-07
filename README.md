@@ -57,7 +57,7 @@ print(f"Flagged: {result.evaluationResults[0].results[0].flagged}")
 | `pii_check` | Detect personally identifiable information |
 | `prompt_injections` | Identify prompt injection attempts |
 | `content_moderation_check` | Check for harmful content (harassment, hate speech, dangerous content, sexual content) |
-| `tool_selection_quality_check` | Evaluate quality of tool/function calls |
+| `tool_use_quality_check` | Evaluate quality of tool/function calls |
 | `syntax_checks` | Validate output syntax (JSON, SQL, etc.) |
 | `assertions` | Custom assertions to validate against the output |
 
@@ -184,7 +184,7 @@ result = client.evaluate(
             },
         ),
     ],
-    tool_selection_quality_check=True,
+    tool_use_quality_check=True,
 )
 ```
 

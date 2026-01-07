@@ -109,5 +109,5 @@ class TestEvaluationRequest:
                 input="input",  # To pass the messages-input-output validation
                 messages=messages,
                 available_tools=available_tools,
-                tool_selection_quality_check=tsq_check,
+                tool_use_quality_check=tsq_check,
             )

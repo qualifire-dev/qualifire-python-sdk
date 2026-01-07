@@ -52,9 +52,11 @@ class Client:
         prompt_injections: bool = False,
         sexual_content_check: bool = False,  # Deprecated: use content_moderation_check
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
-        tool_selection_quality_check: bool = False,
+        tool_selection_quality_check: bool = False,  # Deprecated: use tool_use_quality_check
+        tool_use_quality_check: bool = False,
         content_moderation_check: bool = False,
-        tsq_mode: ModelMode = ModelMode.BALANCED,
+        tsq_mode: Optional[ModelMode] = None,  # Deprecated: use tuq_mode
+        tuq_mode: Optional[ModelMode] = None,
         consistency_mode: ModelMode = ModelMode.BALANCED,
         assertions_mode: ModelMode = ModelMode.BALANCED,
         grounding_mode: ModelMode = ModelMode.BALANCED,
@@ -69,9 +71,9 @@ class Client:
         :param input: The primary input for the evaluation.
         :param output: The primary output (e.g., LLM response) to evaluate.
         :param messages: List of message objects representing conversation history.
-            Must be set if tool_selection_quality_check is True.
+            Must be set if tool_use_quality_check is True.
         :param available_tools: List of available tools.
-            Must be set if tool_selection_quality_check is True.
+            Must be set if tool_use_quality_check is True.
         :param assertions: A list of custom assertions to check against the output.
         :param dangerous_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
             Check for dangerous content generation.
@@ -87,11 +89,16 @@ class Client:
         :param sexual_content_check: .. deprecated:: Use :param:`content_moderation_check` instead.
             Check for sexually explicit content.
         :param syntax_checks: Dictionary defining syntax checks (e.g., JSON, SQL).
-        :param tool_selection_quality_check: Check for tool selection quality.
+        :param tool_selection_quality_check: .. deprecated:: Use :param:`tool_use_quality_check` instead.
+            Check for tool selection quality.
+            Only works when `available_tools` and `messages` are provided.
+        :param tool_use_quality_check: Check for tool use quality
             Only works when `available_tools` and `messages` are provided.
         :param content_moderation_check: Check for content moderation (dangerous content,
             harassment, hate speech, and sexual content).
-        :param tsq_mode: Model mode for tool selection quality check (speed/balanced/quality).
+        :param tsq_mode: .. deprecated:: Use :param:`tuq_mode` instead.
+            Model mode for tool selection quality check (speed/balanced/quality).
+        :param tuq_mode: Model mode for tool use quality check (speed/balanced/quality).
         :param consistency_mode: Model mode for consistency check (speed/balanced/quality).
         :param assertions_mode: Model mode for assertions check (speed/balanced/quality).
         :param grounding_mode: Model mode for grounding check (speed/balanced/quality).
@@ -207,9 +214,10 @@ class Client:
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
-            tool_selection_quality_check=tool_selection_quality_check,
+            tool_use_quality_check=tool_use_quality_check
+            or tool_selection_quality_check,
             content_moderation_check=content_moderation_check,
-            tsq_mode=tsq_mode,
+            tuq_mode=tuq_mode if tuq_mode else tsq_mode,
             consistency_mode=consistency_mode,
             assertions_mode=assertions_mode,
             grounding_mode=grounding_mode,
