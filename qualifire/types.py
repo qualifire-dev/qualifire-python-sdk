@@ -61,8 +61,8 @@ class EvaluationRequest:
     tool_selection_quality_check: bool = False  # Deprecated: use tool_use_quality_check
     tool_use_quality_check: bool = False
     content_moderation_check: bool = False
-    tsq_mode: Optional[ModelMode] = None # Deprecated: use tuq_mode
-    tuq_mode: Optional[ModelMode]= None
+    tsq_mode: Optional[ModelMode] = None  # Deprecated: use tuq_mode
+    tuq_mode: Optional[ModelMode] = None
     consistency_mode: ModelMode = ModelMode.BALANCED
     assertions_mode: ModelMode = ModelMode.BALANCED
     grounding_mode: ModelMode = ModelMode.BALANCED
@@ -83,12 +83,16 @@ class EvaluationRequest:
             )
 
     def _validate_tsq_requirements(self):
-        if (self.tool_selection_quality_check or self.tool_use_quality_check) and not self.messages:
+        if (
+            self.tool_selection_quality_check or self.tool_use_quality_check
+        ) and not self.messages:
             raise ValueError(
                 "messages must be provided in conjunction "
                 "with tool_use_quality_check=True."
             )
-        if (self.tool_selection_quality_check or self.tool_use_quality_check) and not self.available_tools:
+        if (
+            self.tool_selection_quality_check or self.tool_use_quality_check
+        ) and not self.available_tools:
             raise ValueError(
                 "available_tools must be provided in conjunction "
                 "with tool_use_quality_check=True."
