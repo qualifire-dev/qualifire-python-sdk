@@ -26,7 +26,7 @@ def test_get_api_key(
     if env_value is not None:
         monkeypatch.setenv(QUALIFIRE_API_KEY_ENV_VAR, env_value)
     else:
-        monkeypatch.delenv(QUALIFIRE_API_KEY_ENV_VAR, None)
+        monkeypatch.delenv(QUALIFIRE_API_KEY_ENV_VAR, False)
 
     if expected_error:
         with pytest.raises(ValueError):
@@ -51,6 +51,6 @@ def test_get_base_url(
     if env_value is not None:
         monkeypatch.setenv(QUALIFIRE_BASE_URL_ENV_VAR, env_value)
     else:
-        monkeypatch.delenv(QUALIFIRE_BASE_URL_ENV_VAR, None)
+        monkeypatch.delenv(QUALIFIRE_BASE_URL_ENV_VAR, False)
 
     assert get_base_url() == expected_result

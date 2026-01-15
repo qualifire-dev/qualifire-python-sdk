@@ -20,17 +20,23 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
-..mypy_cache/
+.mypy_cache/
 
-# poetry
 .venv
+venv
 
 # C extensions
 *.so
 
-# Virtual environment
-.venv
-venv
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
 
 .DS_Store
 .AppleDouble

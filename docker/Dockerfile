@@ -2,24 +2,23 @@ FROM python:3.11-slim-buster
 
 ENV LANG=C.UTF-8 \
   LC_ALL=C.UTF-8 \
-  PATH="${PATH}:/root/.poetry/bin"
+  UV_COMPILE_BYTECODE=1 \
+  UV_LINK_MODE=copy
 
-RUN apt-get update && \
-  apt-get install -y --no-install-recommends \
-  curl \
-  && rm -rf /var/lib/apt/lists/*
+COPY --from=ghcr.io/astral-sh/uv:0.9.22 /uv /bin/
 
-COPY pyproject.toml ./
+WORKDIR /app
 
-# Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
+COPY pyproject.toml uv.lock README.md ./
 
 # Allow installing dev dependencies to run tests
 ARG INSTALL_DEV=false
-RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --no-dev ; fi"
+RUN if [ "$INSTALL_DEV" = "true" ] ; then \
+      uv sync --frozen --no-cache ; \
+    else \
+      uv sync --frozen --no-cache --no-dev ; \
+    fi
 
-CMD mkdir -p /workspace
-WORKDIR /workspace
+COPY . .
+
+CMD ["/bin/bash"]
