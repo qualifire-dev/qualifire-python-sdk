@@ -22,12 +22,26 @@ Default version is `VERSION := latest`.
 make docker-build IMAGE=some_name VERSION=0.1.0
 ```
 
+### Build with dev dependencies
+
+To build with development dependencies (for testing):
+
+```bash
+docker build --build-arg INSTALL_DEV=true -t qualifire:dev -f docker/Dockerfile .
+```
+
 ## Usage
 
 ```bash
 docker run -it --rm \
-   -v $(pwd):/workspace \
+   -v $(pwd):/app/workspace \
    qualifire bash
+```
+
+Run tests inside the container:
+
+```bash
+docker run -it --rm qualifire:dev uv run pytest
 ```
 
 ## How to clean up

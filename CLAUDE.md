@@ -17,10 +17,10 @@ make pre-commit-install
 make test
 
 # Run a single test file
-poetry run pytest tests/test_types.py
+uv run pytest tests/test_types.py
 
 # Run a specific test
-poetry run pytest tests/test_types.py::TestEvaluationRequest::test_validate_messages_input_output -v
+uv run pytest tests/test_types.py::TestEvaluationRequest::test_validate_messages_input_output -v
 
 # Format code (isort, black, pyupgrade)
 make codestyle

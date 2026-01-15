@@ -2,11 +2,11 @@ from typing import Any, Dict, List, Optional, Union
 
 import json
 import logging
-from dataclasses import asdict
 
 import requests
 
 from .types import (
+    CompilePromptResponse,
     EvaluationInvokeRequest,
     EvaluationRequest,
     EvaluationResponse,
@@ -228,13 +228,14 @@ class Client:
         )
 
         # Filter out None values before dumping to JSON
-        body = json.dumps(asdict(request))
         headers = {
             "Content-Type": "application/json",
             "X-Qualifire-API-Key": self._api_key,
         }
 
-        response = requests.post(url, headers=headers, data=body, verify=self._verify)
+        response = requests.post(
+            url, headers=headers, data=request.model_dump_json(), verify=self._verify
+        )
 
         if response.status_code != 200:
             message = f"Qualifire API error: {response.status_code}"
@@ -272,7 +273,6 @@ class Client:
             available_tools=available_tools,
         )
 
-        body = json.dumps(asdict(request))
         headers = {
             "X-Qualifire-API-Key": self._api_key,
             "Content-Type": "application/json",
@@ -281,7 +281,7 @@ class Client:
         response = requests.request(
             "POST",
             url,
-            data=body,
+            data=request.model_dump_json(),
             headers=headers,
             verify=self._verify,
         )
@@ -295,3 +295,32 @@ class Client:
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
+
+    def compile_prompt(
+        self,
+        prompt_id: str,
+        revision_id: Optional[str] = None,
+        params: Optional[Dict[str, str]] = None,
+    ) -> CompilePromptResponse:
+        url = f"{self._base_url}/api/v1/studio/prompts/{prompt_id}/compile"
+        if revision_id:
+            url = f"{url}?revision={revision_id}"
+
+        headers = {
+            "X-Qualifire-API-Key": self._api_key,
+            "Content-Type": "application/json",
+        }
+
+        if not params:
+            params = {}
+        request_body = json.dumps({"variables": params})
+
+        response = requests.post(
+            url=url,
+            data=request_body,
+            headers=headers,
+            verify=self._verify,
+        )
+        response.raise_for_status()
+
+        return CompilePromptResponse(**response.json())

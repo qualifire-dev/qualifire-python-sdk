@@ -189,7 +189,6 @@ target/
 # pyenv
 .python-version
 
-# poetry
 .venv
 
 # pipenv

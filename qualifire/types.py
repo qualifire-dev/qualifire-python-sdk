@@ -1,7 +1,8 @@
 from typing import Any, Dict, List, Optional
 
-from dataclasses import dataclass, field
 from enum import Enum
+
+from pydantic import BaseModel, model_validator
 
 
 class ModelMode(str, Enum):
@@ -16,37 +17,32 @@ class PolicyTarget(str, Enum):
     BOTH = "both"
 
 
-@dataclass
-class LLMToolDefinition:
+class LLMToolDefinition(BaseModel):
     name: str
     description: str
     parameters: Dict[str, Any]
 
 
-@dataclass
-class LLMToolCall:
+class LLMToolCall(BaseModel):
     name: str
     arguments: Dict[str, Any]
     id: Optional[str]
 
 
-@dataclass
-class LLMMessage:
+class LLMMessage(BaseModel):
     role: str
     content: str
     tool_calls: Optional[List[LLMToolCall]] = None
 
 
-@dataclass
-class SyntaxCheckArgs:
+class SyntaxCheckArgs(BaseModel):
     args: str
 
 
-@dataclass
-class EvaluationRequest:
+class EvaluationRequest(BaseModel):
     input: Optional[str] = None
     output: Optional[str] = None
-    messages: Optional[List[LLMMessage]] = field(default_factory=list)
+    messages: Optional[List[LLMMessage]] = None
     available_tools: Optional[List[LLMToolDefinition]] = None
     dangerous_content_check: bool = False  # Deprecated: use content_moderation_check
     hallucinations_check: bool = False
@@ -57,7 +53,7 @@ class EvaluationRequest:
     sexual_content_check: bool = False  # Deprecated: use content_moderation_check
     grounding_check: bool = False
     syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None
-    assertions: Optional[List[str]] = field(default_factory=list)
+    assertions: Optional[List[str]] = None
     tool_selection_quality_check: bool = False  # Deprecated: use tool_use_quality_check
     tool_use_quality_check: bool = False
     content_moderation_check: bool = False
@@ -71,18 +67,21 @@ class EvaluationRequest:
     policy_multi_turn_mode: bool = False
     policy_target: PolicyTarget = PolicyTarget.BOTH
 
-    def __post_init__(self):
+    @model_validator(mode="after")
+    def validate_model(self) -> "EvaluationRequest":
+        """Validate the model after initialization."""
         self._validate_messages_input_output()
         self._validate_tsq_requirements()
         self._handle_deprecated_content_checks()
+        return self
 
-    def _validate_messages_input_output(self):
+    def _validate_messages_input_output(self) -> None:
         if not self.messages and not self.input and not self.output:
             raise ValueError(
                 "At least one of messages, input, or output must be set",
             )
 
-    def _validate_tsq_requirements(self):
+    def _validate_tsq_requirements(self) -> None:
         if (
             self.tool_selection_quality_check or self.tool_use_quality_check
         ) and not self.messages:
@@ -98,7 +97,7 @@ class EvaluationRequest:
                 "with tool_use_quality_check=True."
             )
 
-    def _handle_deprecated_content_checks(self):
+    def _handle_deprecated_content_checks(self) -> None:
         """Auto-set content_moderation_check if deprecated fields are set."""
         if (
             self.dangerous_content_check
@@ -109,28 +108,28 @@ class EvaluationRequest:
             self.content_moderation_check = True
 
 
-@dataclass
-class EvaluationInvokeRequest:
+class EvaluationInvokeRequest(BaseModel):
     evaluation_id: str
     input: Optional[str] = None
     output: Optional[str] = None
     messages: Optional[List[LLMMessage]] = None
     available_tools: Optional[List[LLMToolDefinition]] = None
 
-    def __post_init__(self):
+    @model_validator(mode="after")
+    def validate_model(self) -> "EvaluationInvokeRequest":
         self._validate_messages_input_output()
+        return self
 
-    def _validate_messages_input_output(self):
+    def _validate_messages_input_output(self) -> None:
         if not self.messages and not self.input and not self.output:
             raise ValueError(
                 "At least one of messages, input, or output must be set",
             )
 
 
-@dataclass
-class EvaluationResult:
-    claim: str
-    confidence_score: int
+class EvaluationResult(BaseModel):
+    claim: Optional[str] = None
+    confidence_score: float
     label: str
     name: str
     quote: str
@@ -139,14 +138,26 @@ class EvaluationResult:
     flagged: bool
 
 
-@dataclass
-class EvaluationResultItem:
+class EvaluationResultItem(BaseModel):
     results: List[EvaluationResult]
     type: str
 
 
-@dataclass
-class EvaluationResponse:
+class EvaluationResponse(BaseModel):
     evaluationResults: List[EvaluationResultItem]
     score: int
     status: str
+
+
+class ToolResponse(BaseModel):
+    type: str
+    function: LLMToolDefinition
+
+
+class CompilePromptResponse(BaseModel):
+    id: str
+    name: str
+    revision: int
+    messages: List[LLMMessage]
+    tools: List[ToolResponse]
+    parameters: Dict[str, Any]

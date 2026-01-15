@@ -7,33 +7,28 @@ PYTHONPATH := `pwd`
 IMAGE := qualifire
 VERSION := latest
 
-#* Poetry
-.PHONY: poetry-download
-poetry-download:
-	pip install -U poetry==1.2.0
-	poetry --version
-
-.PHONY: poetry-remove
-poetry-remove:
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | $(PYTHON) - --uninstall
+#* UV
+.PHONY: uv-download
+uv-download:
+	brew install uv
+	uv --version
 
 #* Installation
 .PHONY: install
 install:
-	poetry lock -n && poetry export --without-hashes > requirements.txt
-	poetry install -n
-	-poetry run mypy --install-types --non-interactive ./
+	uv sync
+	-uv run mypy --install-types --non-interactive ./
 
 .PHONY: pre-commit-install
 pre-commit-install:
-	poetry run pre-commit install
+	uv run pre-commit install
 
 #* Formatters
 .PHONY: codestyle
 codestyle:
-	poetry run pyupgrade --exit-zero-even-if-changed --py38-plus **/*.py
-	poetry run isort --settings-path pyproject.toml ./
-	poetry run black --config pyproject.toml ./
+	uv run pyupgrade --exit-zero-even-if-changed --py38-plus **/*.py
+	uv run isort --settings-path pyproject.toml ./
+	uv run black --config pyproject.toml ./
 
 .PHONY: formatting
 formatting: codestyle
@@ -41,32 +36,31 @@ formatting: codestyle
 #* Linting
 .PHONY: test
 test:
-	PYTHONPATH=$(PYTHONPATH) poetry run pytest -c pyproject.toml --cov-report=html --cov=qualifire tests/
-	poetry run coverage-badge -o assets/images/coverage.svg -f
+	PYTHONPATH=$(PYTHONPATH) uv run pytest -c pyproject.toml --cov-report=html --cov=qualifire tests/
+	uv run coverage-badge -o assets/images/coverage.svg -f
 
 .PHONY: check-codestyle
 check-codestyle:
-	poetry run isort --diff --check-only --settings-path pyproject.toml ./
-	poetry run black --diff --check --config pyproject.toml ./
-	poetry run darglint --verbosity 2 qualifire tests
+	uv run isort --diff --check-only --settings-path pyproject.toml ./
+	uv run black --diff --check --config pyproject.toml ./
+	uv run darglint --verbosity 2 qualifire tests
 
 .PHONY: mypy
 mypy:
-	poetry run mypy --config-file pyproject.toml ./
+	uv run mypy --config-file pyproject.toml ./
 
 .PHONY: check-safety
 check-safety:
-	poetry check
-	poetry run safety check --full-report
-	poetry run bandit -ll --skip B113 --recursive qualifire tests
+	uv run safety check --full-report
+	uv run bandit -ll --skip B113 --recursive qualifire tests
 
 .PHONY: lint
 lint: test check-codestyle mypy check-safety
 
 .PHONY: update-dev-deps
 update-dev-deps:
-	poetry add -D bandit@latest darglint@latest "isort[colors]@latest" mypy@latest pre-commit@latest pydocstyle@latest pylint@latest pytest@latest pyupgrade@latest safety@latest coverage@latest coverage-badge@latest pytest-html@latest pytest-cov@latest
-	poetry add -D --allow-prereleases black@latest
+	uv add --dev bandit@latest darglint@latest "isort[colors]@latest" mypy@latest pre-commit@latest pydocstyle@latest pylint@latest pytest@latest pyupgrade@latest safety@latest coverage@latest coverage-badge@latest pytest-html@latest pytest-cov@latest
+	uv add --dev --prerelease=allow black@latest
 
 #* Docker
 # Example: make docker-build VERSION=latest
@@ -108,7 +102,20 @@ pytestcache-remove:
 
 .PHONY: build-remove
 build-remove:
-	rm -rf build/
+	rm -rf build/ dist/
 
 .PHONY: cleanup
 cleanup: pycache-remove dsstore-remove mypycache-remove ipynbcheckpoints-remove pytestcache-remove
+
+#* Build
+.PHONY: build
+build:
+	uv build
+
+.PHONY: build-wheel
+build-wheel:
+	uv build --wheel
+
+.PHONY: build-sdist
+build-sdist:
+	uv build --sdist
