@@ -1,12 +1,11 @@
 from typing import Any, Dict, List, Optional, Union
 
-import json
 import logging
-from dataclasses import asdict
 
 import requests
 
 from .types import (
+    CompilePromptResponse,
     EvaluationInvokeRequest,
     EvaluationRequest,
     EvaluationResponse,
@@ -52,7 +51,7 @@ class Client:
         prompt_injections: bool = False,
         sexual_content_check: bool = False,  # Deprecated: use content_moderation_check
         syntax_checks: Optional[Dict[str, SyntaxCheckArgs]] = None,
-        tool_selection_quality_check: bool = False,  # Deprecated: use tool_use_quality_check
+        tool_selection_quality_check: bool = False,  # Deprecated: use tool_use_quality_check # noqa: E501
         tool_use_quality_check: bool = False,
         content_moderation_check: bool = False,
         tsq_mode: Optional[ModelMode] = None,  # Deprecated: use tuq_mode
@@ -227,14 +226,12 @@ class Client:
             policy_target=policy_target,
         )
 
-        # Filter out None values before dumping to JSON
-        body = json.dumps(asdict(request))
-        headers = {
-            "Content-Type": "application/json",
-            "X-Qualifire-API-Key": self._api_key,
-        }
-
-        response = requests.post(url, headers=headers, data=body, verify=self._verify)
+        response = requests.post(
+            url,
+            headers=self._get_headers(),
+            json=request.model_dump(),
+            verify=self._verify,
+        )
 
         if response.status_code != 200:
             message = f"Qualifire API error: {response.status_code}"
@@ -272,17 +269,11 @@ class Client:
             available_tools=available_tools,
         )
 
-        body = json.dumps(asdict(request))
-        headers = {
-            "X-Qualifire-API-Key": self._api_key,
-            "Content-Type": "application/json",
-        }
-
         response = requests.request(
             "POST",
             url,
-            data=body,
-            headers=headers,
+            json=request.model_dump(),
+            headers=self._get_headers(),
             verify=self._verify,
         )
         if response.status_code != 200:
@@ -295,3 +286,36 @@ class Client:
 
         json_response = response.json()
         return EvaluationResponse(**json_response)
+
+    def compile_prompt(
+        self,
+        prompt_id: str,
+        revision_id: Optional[str] = None,
+        params: Optional[Dict[str, str]] = None,
+    ) -> CompilePromptResponse:
+        url = f"{self._base_url}/api/v1/studio/prompts/{prompt_id}/compile"
+        if revision_id:
+            url = f"{url}?revision={revision_id}"
+
+        if not params:
+            params = {}
+
+        response = requests.post(
+            url=url,
+            json={"variables": params},
+            headers=self._get_headers(),
+            verify=self._verify,
+        )
+
+        if response.status_code != 200:
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
+
+        return CompilePromptResponse(**response.json())
+
+    def _get_headers(self) -> Dict[str, Any]:
+        return {
+            "X-Qualifire-API-Key": self._api_key,
+        }

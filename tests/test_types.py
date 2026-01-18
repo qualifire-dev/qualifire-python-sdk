@@ -27,7 +27,7 @@ _test_available_tools = [
             },
             "required": ["bar", "baz"],
         },
-    )
+    ),
 ]
 
 

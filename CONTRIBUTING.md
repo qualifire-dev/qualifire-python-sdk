@@ -2,8 +2,8 @@
 
 ## Dependencies
 
-We use `poetry` to manage the [dependencies](https://github.com/python-poetry/poetry).
-If you dont have `poetry`, you should install with `make poetry-download`.
+We use `uv` to manage the [dependencies](https://docs.astral.sh/uv/).
+If you don't have `uv`, you should install with `make uv-download` or follow the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
 
 To install dependencies and prepare [`pre-commit`](https://pre-commit.com/) hooks you would need to run `install` command:
 
@@ -12,7 +12,7 @@ make install
 make pre-commit-install
 ```
 
-To activate your `virtualenv` run `poetry shell`.
+To activate your virtual environment, uv will automatically handle it when running commands with `uv run`.
 
 ## Codestyle
 
