@@ -82,14 +82,29 @@ class EvaluationRequest(BaseModel):
             )
 
     def _validate_tsq_requirements(self) -> None:
-        if (self.tool_selection_quality_check or self.tool_use_quality_check) and not self.messages:
-            raise ValueError("messages must be provided in conjunction " "with tool_use_quality_check=True.")
-        if (self.tool_selection_quality_check or self.tool_use_quality_check) and not self.available_tools:
-            raise ValueError("available_tools must be provided in conjunction " "with tool_use_quality_check=True.")
+        if (
+            self.tool_selection_quality_check or self.tool_use_quality_check
+        ) and not self.messages:
+            raise ValueError(
+                "messages must be provided in conjunction "
+                "with tool_use_quality_check=True."
+            )
+        if (
+            self.tool_selection_quality_check or self.tool_use_quality_check
+        ) and not self.available_tools:
+            raise ValueError(
+                "available_tools must be provided in conjunction "
+                "with tool_use_quality_check=True."
+            )
 
     def _handle_deprecated_content_checks(self) -> None:
         """Auto-set content_moderation_check if deprecated fields are set."""
-        if self.dangerous_content_check or self.harassment_check or self.hate_speech_check or self.sexual_content_check:
+        if (
+            self.dangerous_content_check
+            or self.harassment_check
+            or self.hate_speech_check
+            or self.sexual_content_check
+        ):
             self.content_moderation_check = True
 
 
