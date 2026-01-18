@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qualifire"
-version = "0.12.0"
+version = "0.13.0"
 description = "Qualifire Python SDK"
 authors = [{ name = "qualifire-dev", email = "dror@qualifire.ai" }]
 requires-python = ">=3.8,<4"
@@ -61,7 +61,7 @@ include = ["qualifire"]
 [tool.black]
 # https://github.com/psf/black
 target-version = ["py38"]
-line-length = 120
+line-length = 88
 color = true
 
 exclude = '''
