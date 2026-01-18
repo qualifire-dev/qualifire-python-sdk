@@ -3,7 +3,7 @@
 ## Dependencies
 
 We use `uv` to manage the [dependencies](https://docs.astral.sh/uv/).
-If you dont have `uv`, you should install with `make uv-download` or follow the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+If you don't have `uv`, you should install with `make uv-download` or follow the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
 
 To install dependencies and prepare [`pre-commit`](https://pre-commit.com/) hooks you would need to run `install` command:
 

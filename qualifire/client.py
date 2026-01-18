@@ -214,8 +214,7 @@ class Client:
             prompt_injections=prompt_injections,
             sexual_content_check=sexual_content_check,
             syntax_checks=syntax_checks,
-            tool_use_quality_check=tool_use_quality_check
-            or tool_selection_quality_check,
+            tool_use_quality_check=tool_use_quality_check or tool_selection_quality_check,
             content_moderation_check=content_moderation_check,
             tuq_mode=tuq_mode if tuq_mode else tsq_mode,
             consistency_mode=consistency_mode,
@@ -233,9 +232,7 @@ class Client:
             "X-Qualifire-API-Key": self._api_key,
         }
 
-        response = requests.post(
-            url, headers=headers, data=request.model_dump_json(), verify=self._verify
-        )
+        response = requests.post(url, headers=headers, data=request.model_dump_json(), verify=self._verify)
 
         if response.status_code != 200:
             message = f"Qualifire API error: {response.status_code}"
@@ -260,9 +257,7 @@ class Client:
         url = f"{self._base_url}/api/evaluation/invoke/"
 
         if messages is not None:
-            if isinstance(messages, list) and all(
-                isinstance(message, dict) for message in messages
-            ):
+            if isinstance(messages, list) and all(isinstance(message, dict) for message in messages):
                 messages = [LLMMessage(**message) for message in messages]  # type: ignore # noqa E501
 
         request = EvaluationInvokeRequest(
@@ -321,6 +316,11 @@ class Client:
             headers=headers,
             verify=self._verify,
         )
-        response.raise_for_status()
+
+        if response.status_code != 200:
+            message = f"Qualifire API error: {response.status_code}"
+            if response.text:
+                message += f" - {response.text}"
+            raise Exception(message)
 
         return CompilePromptResponse(**response.json())

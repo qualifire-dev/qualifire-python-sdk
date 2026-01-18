@@ -28,8 +28,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/qualifire_dev/qualifire"
-Repository = "https://github.com/qualifire_dev/qualifire"
+Homepage = "https://github.com/qualifire-dev/qualifire"
+Repository = "https://github.com/qualifire-dev/qualifire"
 
 [dependency-groups]
 dev = [
@@ -49,6 +49,7 @@ dev = [
     "coverage>=7.3.1,<8",
     "coverage-badge>=1.1.0,<2",
     "pytest-cov>=4.1.0,<5",
+    "openai>=2.2.0",
 ]
 
 [tool.hatch.build.targets.sdist]
@@ -60,7 +61,7 @@ include = ["qualifire"]
 [tool.black]
 # https://github.com/psf/black
 target-version = ["py38"]
-line-length = 88
+line-length = 120
 color = true
 
 exclude = '''
