@@ -87,14 +87,14 @@ class EvaluationRequest(BaseModel):
         ) and not self.messages:
             raise ValueError(
                 "messages must be provided in conjunction "
-                "with tool_use_quality_check=True."
+                "with tool_use_quality_check=True.",
             )
         if (
             self.tool_selection_quality_check or self.tool_use_quality_check
         ) and not self.available_tools:
             raise ValueError(
                 "available_tools must be provided in conjunction "
-                "with tool_use_quality_check=True."
+                "with tool_use_quality_check=True.",
             )
 
     def _handle_deprecated_content_checks(self) -> None:

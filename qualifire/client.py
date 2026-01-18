@@ -1,6 +1,5 @@
 from typing import Any, Dict, List, Optional, Union
 
-import json
 import logging
 
 import requests
@@ -227,14 +226,11 @@ class Client:
             policy_target=policy_target,
         )
 
-        # Filter out None values before dumping to JSON
-        headers = {
-            "Content-Type": "application/json",
-            "X-Qualifire-API-Key": self._api_key,
-        }
-
         response = requests.post(
-            url, headers=headers, data=request.model_dump_json(), verify=self._verify
+            url,
+            headers=self._get_headers(),
+            json=request.model_dump(),
+            verify=self._verify,
         )
 
         if response.status_code != 200:
@@ -273,16 +269,11 @@ class Client:
             available_tools=available_tools,
         )
 
-        headers = {
-            "X-Qualifire-API-Key": self._api_key,
-            "Content-Type": "application/json",
-        }
-
         response = requests.request(
             "POST",
             url,
-            data=request.model_dump_json(),
-            headers=headers,
+            json=request.model_dump(),
+            headers=self._get_headers(),
             verify=self._verify,
         )
         if response.status_code != 200:
@@ -306,19 +297,13 @@ class Client:
         if revision_id:
             url = f"{url}?revision={revision_id}"
 
-        headers = {
-            "X-Qualifire-API-Key": self._api_key,
-            "Content-Type": "application/json",
-        }
-
         if not params:
             params = {}
-        request_body = json.dumps({"variables": params})
 
         response = requests.post(
             url=url,
-            data=request_body,
-            headers=headers,
+            json={"variables": params},
+            headers=self._get_headers(),
             verify=self._verify,
         )
 
@@ -329,3 +314,8 @@ class Client:
             raise Exception(message)
 
         return CompilePromptResponse(**response.json())
+
+    def _get_headers(self) -> Dict[str, Any]:
+        return {
+            "X-Qualifire-API-Key": self._api_key,
+        }

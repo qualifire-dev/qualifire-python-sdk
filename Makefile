@@ -25,6 +25,7 @@ codestyle:
 	uv run pyupgrade --exit-zero-even-if-changed --py38-plus **/*.py
 	uv run isort --settings-path pyproject.toml ./
 	uv run black --config pyproject.toml ./
+	uv tool run add-trailing-comma ./**/*.py
 
 .PHONY: formatting
 formatting: codestyle
@@ -40,6 +41,7 @@ check-codestyle:
 	uv run isort --diff --check-only --settings-path pyproject.toml ./
 	uv run black --diff --check --config pyproject.toml ./
 	uv run darglint --verbosity 2 qualifire tests
+	uv tool run add-trailing-comma ./**/*.py
 
 .PHONY: mypy
 mypy:
