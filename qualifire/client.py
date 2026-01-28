@@ -63,6 +63,9 @@ class Client:
         grounding_multi_turn_mode: bool = False,
         policy_multi_turn_mode: bool = False,
         policy_target: PolicyTarget = PolicyTarget.BOTH,
+        topic_scoping_mode: Optional[ModelMode] = None,
+        topic_scoping_multi_turn_mode: bool = False,
+        topic_scoping_target: Optional[str] = None,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
@@ -105,6 +108,9 @@ class Client:
         :param grounding_multi_turn_mode: Enable multi-turn mode for grounding check.
         :param policy_multi_turn_mode: Enable multi-turn mode for policy check.
         :param policy_target: Target for policy checks (input/output/both).
+        :param topic_scoping_mode: Model mode for topic scoping check (speed/balanced/quality).
+        :param topic_scoping_multi_turn_mode: Enable multi-turn mode for topic scoping check.
+        :param topic_scoping_target: Target topic for topic scoping check.
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -224,6 +230,9 @@ class Client:
             grounding_multi_turn_mode=grounding_multi_turn_mode,
             policy_multi_turn_mode=policy_multi_turn_mode,
             policy_target=policy_target,
+            topic_scoping_mode=topic_scoping_mode,
+            topic_scoping_multi_turn_mode=topic_scoping_multi_turn_mode,
+            topic_scoping_target=topic_scoping_target,
         )
 
         response = requests.post(
