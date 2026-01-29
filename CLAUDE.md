@@ -42,15 +42,17 @@ make check-safety
 
 The SDK has a minimal structure centered on the `Client` class:
 
-- **`qualifire/client.py`**: Main `Client` class with two public methods:
+- **`qualifire/client.py`**: Main `Client` class with three public methods:
   - `evaluate()` - Run ad-hoc evaluations with various checks (hallucinations, grounding, PII, content moderation, etc.)
   - `invoke_evaluation()` - Run pre-configured evaluations from the Qualifire dashboard
+  - `compile_prompt()` - Compile a prompt with topic scoping and policy targets
 
 - **`qualifire/types.py`**: All data classes and enums:
   - `EvaluationRequest`/`EvaluationResponse` - API request/response structures
   - `LLMMessage`, `LLMToolCall`, `LLMToolDefinition` - Message and tool types for conversation-based evaluation
   - `ModelMode` (SPEED/BALANCED/QUALITY) - Quality vs speed trade-off for checks
   - `SyntaxCheckArgs` - Configuration for syntax validation
+  - `PolicyTarget`, `CompilePromptResponse` - Types for prompt compilation with topic scoping
 
 - **`qualifire/utils.py`**: Helper functions for API key and base URL resolution from environment variables
 
