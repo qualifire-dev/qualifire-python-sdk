@@ -65,7 +65,8 @@ class Client:
         policy_target: PolicyTarget = PolicyTarget.BOTH,
         topic_scoping_mode: Optional[ModelMode] = None,
         topic_scoping_multi_turn_mode: bool = False,
-        topic_scoping_target: Optional[str] = None,
+        topic_scoping_target: PolicyTarget = PolicyTarget.BOTH,
+        allowed_topics: Optional[List[str]] = None,
     ) -> Union[EvaluationResponse, None]:
         """
         Evaluates the given input and output pairs.
@@ -111,6 +112,7 @@ class Client:
         :param topic_scoping_mode: Model mode for topic scoping check (speed/balanced/quality).
         :param topic_scoping_multi_turn_mode: Enable multi-turn mode for topic scoping check.
         :param topic_scoping_target: Target topic for topic scoping check.
+        :param allowed_topics: List of allowed topics for topic scoping check.
 
         :return: An EvaluationResponse object containing the evaluation results.
         :raises Exception: If an error occurs during the evaluation.
@@ -233,6 +235,7 @@ class Client:
             topic_scoping_mode=topic_scoping_mode,
             topic_scoping_multi_turn_mode=topic_scoping_multi_turn_mode,
             topic_scoping_target=topic_scoping_target,
+            allowed_topics=allowed_topics,
         )
 
         response = requests.post(
