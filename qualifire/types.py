@@ -66,6 +66,10 @@ class EvaluationRequest(BaseModel):
     grounding_multi_turn_mode: bool = False
     policy_multi_turn_mode: bool = False
     policy_target: PolicyTarget = PolicyTarget.BOTH
+    topic_scoping_mode: Optional[ModelMode] = None
+    topic_scoping_multi_turn_mode: bool = False
+    topic_scoping_target: Optional[str] = None
+    allowed_topics: Optional[List[str]] = None
 
     @model_validator(mode="after")
     def validate_model(self) -> "EvaluationRequest":
