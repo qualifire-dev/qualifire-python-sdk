@@ -70,6 +70,7 @@ class EvaluationRequest(BaseModel):
     topic_scoping_multi_turn_mode: bool = False
     topic_scoping_target: PolicyTarget = PolicyTarget.BOTH
     allowed_topics: Optional[List[str]] = None
+    metadata: Optional[Dict[str, str]] = None
 
     @model_validator(mode="after")
     def validate_model(self) -> "EvaluationRequest":
@@ -118,6 +119,7 @@ class EvaluationInvokeRequest(BaseModel):
     output: Optional[str] = None
     messages: Optional[List[LLMMessage]] = None
     available_tools: Optional[List[LLMToolDefinition]] = None
+    metadata: Optional[Dict[str, str]] = None
 
     @model_validator(mode="after")
     def validate_model(self) -> "EvaluationInvokeRequest":
