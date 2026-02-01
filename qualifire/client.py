@@ -207,7 +207,7 @@ class Client:
         )
         ```
         """  # noqa E501
-        url = f"{self._base_url}/api/evaluation/evaluate"
+        url = f"{self._base_url}/api/v1/evaluation/evaluate"
         request = EvaluationRequest(
             input=input,
             output=output,
@@ -269,7 +269,7 @@ class Client:
         available_tools: Optional[List[LLMToolDefinition]] = None,
         metadata: Optional[Dict[str, str]] = None,
     ) -> EvaluationResponse:
-        url = f"{self._base_url}/api/evaluation/invoke/"
+        url = f"{self._base_url}/api/v1/evaluation/invoke/"
 
         if messages is not None:
             if isinstance(messages, list) and all(
