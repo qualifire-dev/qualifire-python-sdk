@@ -2,8 +2,10 @@ import os
 
 from .consts import (
     _DEFAULT_BASE_URL,
+    _DEFAULT_TRACING_URL,
     QUALIFIRE_API_KEY_ENV_VAR,
     QUALIFIRE_BASE_URL_ENV_VAR,
+    QUALIFIRE_TRACING_URL_ENV_VAR,
 )
 
 
@@ -19,3 +21,10 @@ def get_base_url() -> str:
     if not base_url:
         return _DEFAULT_BASE_URL
     return base_url
+
+
+def get_tracing_url() -> str:
+    tracing_url = os.getenv(QUALIFIRE_TRACING_URL_ENV_VAR)
+    if not tracing_url:
+        return _DEFAULT_TRACING_URL
+    return tracing_url
