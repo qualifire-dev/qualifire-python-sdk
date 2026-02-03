@@ -10,7 +10,7 @@ try:
 except ImportError:
     traceloop_installed = False
 
-from .utils import get_api_key, get_base_url
+from .utils import get_api_key, get_tracing_url
 
 R = TypeVar("R")
 
@@ -37,7 +37,7 @@ def __configure_tracer(api_key: str) -> None:
     __suppress_prints(
         Traceloop.init,
         app_name="qualifire-agent",
-        api_endpoint=f"{get_base_url()}/api/telemetry",  # /v1/traces is automatically added  # noqa: E501
+        api_endpoint=f"{get_tracing_url()}/api/telemetry",  # /v1/traces is automatically added  # noqa: E501
         headers={"X-Qualifire-API-Key": api_key},
         telemetry_enabled=False,
         traceloop_sync_enabled=False,
