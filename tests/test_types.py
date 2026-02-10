@@ -111,3 +111,11 @@ class TestEvaluationRequest:
                 available_tools=available_tools,
                 tool_use_quality_check=tsq_check,
             )
+
+    def test_policy_include_tools_defaults_false(self):
+        req = EvaluationRequest(input="test")
+        assert req.policy_include_tools is False
+
+    def test_policy_include_tools_can_be_set(self):
+        req = EvaluationRequest(input="test", policy_include_tools=True)
+        assert req.policy_include_tools is True

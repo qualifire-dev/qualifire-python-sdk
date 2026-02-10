@@ -65,6 +65,7 @@ class EvaluationRequest(BaseModel):
     hallucinations_mode: ModelMode = ModelMode.BALANCED
     grounding_multi_turn_mode: bool = False
     policy_multi_turn_mode: bool = False
+    policy_include_tools: bool = False
     policy_target: PolicyTarget = PolicyTarget.BOTH
     topic_scoping_mode: Optional[ModelMode] = None
     topic_scoping_multi_turn_mode: bool = False

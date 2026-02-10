@@ -62,6 +62,7 @@ class Client:
         hallucinations_mode: ModelMode = ModelMode.BALANCED,
         grounding_multi_turn_mode: bool = False,
         policy_multi_turn_mode: bool = False,
+        policy_include_tools: bool = False,
         policy_target: PolicyTarget = PolicyTarget.BOTH,
         topic_scoping_mode: Optional[ModelMode] = None,
         topic_scoping_multi_turn_mode: bool = False,
@@ -109,6 +110,7 @@ class Client:
         :param hallucinations_mode: Model mode for hallucinations check (speed/balanced/quality).
         :param grounding_multi_turn_mode: Enable multi-turn mode for grounding check.
         :param policy_multi_turn_mode: Enable multi-turn mode for policy check.
+        :param policy_include_tools: Include tool definitions and tool calls in policy assertion context.
         :param policy_target: Target for policy checks (input/output/both).
         :param topic_scoping_mode: Model mode for topic scoping check (speed/balanced/quality).
         :param topic_scoping_multi_turn_mode: Enable multi-turn mode for topic scoping check.
@@ -233,6 +235,7 @@ class Client:
             hallucinations_mode=hallucinations_mode,
             grounding_multi_turn_mode=grounding_multi_turn_mode,
             policy_multi_turn_mode=policy_multi_turn_mode,
+            policy_include_tools=policy_include_tools,
             policy_target=policy_target,
             topic_scoping_mode=topic_scoping_mode,
             topic_scoping_multi_turn_mode=topic_scoping_multi_turn_mode,

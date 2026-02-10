@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qualifire"
-version = "0.16.0"
+version = "0.17.0"
 description = "Qualifire Python SDK"
 authors = [{ name = "qualifire-dev", email = "dror@qualifire.ai" }]
 requires-python = ">=3.8,<4"
@@ -97,7 +97,7 @@ color_output = true
 
 [tool.mypy]
 # https://mypy.readthedocs.io/en/latest/config_file.html#using-a-pyproject-toml-file
-python_version = 3.8
+python_version = "3.8"
 pretty = true
 show_traceback = true
 color_output = true
