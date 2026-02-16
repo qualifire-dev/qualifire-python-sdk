@@ -141,7 +141,7 @@ class EvaluationResult(BaseModel):
     name: str
     quote: str
     reason: str
-    score: int
+    score: float
     flagged: bool
 
 
@@ -152,7 +152,7 @@ class EvaluationResultItem(BaseModel):
 
 class EvaluationResponse(BaseModel):
     evaluationResults: List[EvaluationResultItem]
-    score: int
+    score: float
     status: str
 
 
